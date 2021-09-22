@@ -1,11 +1,11 @@
+import os
 from pathlib import Path
 
-from src.config.env_consts import ENV_CONSTS
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = ENV_CONSTS.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
@@ -54,11 +54,11 @@ WSGI_APPLICATION = 'src.config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': ENV_CONSTS.get('DATABASE_NAME'),
-        'USER': ENV_CONSTS.get('DATABASE_USER'),
-        'PASSWORD': ENV_CONSTS.get('DATABASE_PASSWORD'),
-        'HOST': ENV_CONSTS.get('DATABASE_HOST'),
-        'PORT': ENV_CONSTS.get('DATABASE_PORT'),
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+        'HOST': os.environ.get('DATABASE_HOST'),
+        'PORT': os.environ.get('DATABASE_POST'),
     }
 }
 
