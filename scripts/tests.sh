@@ -14,4 +14,4 @@ cd ..
 CWD="$(pwd)"
 
 
-pytest ./src
+pytest .
