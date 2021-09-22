@@ -1,0 +1,41 @@
+version: '3.9'
+
+
+networks:
+  trainee_network:
+    driver: bridge
+
+
+services:
+  app_auth:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - trainee_network
+
+  db:
+    image: postgres:12.8
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: "${DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE_NAME}"
+    ports:
+      - 5432:5432
+    networks:
+      - trainee_network
+
+volumes:
+  postgres_data:
