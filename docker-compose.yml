@@ -7,7 +7,7 @@ networks:
 
 
 services:
-  django:
+  app_auth:
     restart: always
     build:
       context: .
