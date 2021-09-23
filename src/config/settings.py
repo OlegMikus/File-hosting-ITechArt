@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'src.accounts',
+    'src.base',
 ]
 
 MIDDLEWARE = [
@@ -99,4 +100,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MIGRATION_MODULES = {'accounts': 'src.accounts.models.migrations'}
+AUTH_USER_MODEL = 'accounts.User'
