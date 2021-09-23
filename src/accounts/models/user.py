@@ -1,49 +1,43 @@
-import uuid
-
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
-class BaseModel(models.Model):
-    """
-    An abstract base class implementing a base fields for all models
-    """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
+from src.accounts.managers import CustomUserManager
+from src.base.models.base import BaseModel
+from src.accounts.validators import validate_age, validate_name
 
 
-class User(BaseModel):
+class User(BaseModel, AbstractUser):
     """
     Class that implementing user entity
 
     All fields are required
     """
+    username = None
+
     first_name = models.CharField(max_length=30,
+                                  validators=[validate_name],
+                                  blank=True,
                                   help_text='Users first name')
 
     last_name = models.CharField(max_length=40,
-                                 help_text='Users last name')
+                                 validators=[validate_name],
+                                 help_text='Users last name',
+                                 blank=True)
 
     email = models.EmailField(max_length=254,
                               unique=True,
                               help_text='Users email')
 
-    age = models.IntegerField(help_text='')
+    age = models.PositiveIntegerField(help_text='Users age',
+                                      validators=[validate_age])
 
-    password = models.CharField(max_length=64,
+    password = models.CharField(max_length=256,
                                 help_text='Users password')
 
-    is_staff = models.BooleanField(
-        default=False,
-        help_text='Designates whether the user can log into this admin site.'
-    )
-    is_active = models.BooleanField(
-        default=True,
-        help_text='Designates whether this user should be treated as active. '
-                  'Unselect this instead of deleting accounts.')
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-    def __str__(self):
+    objects = CustomUserManager()
+
+    def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
