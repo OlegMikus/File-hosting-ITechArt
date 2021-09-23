@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload
     volumes:
       - .:/app
     ports:
@@ -24,6 +24,14 @@ services:
     networks:
       - trainee_network
 
+  nginx:
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - app_auth
+    networks:
+      - trainee_network
   db:
     image: postgres:12.8
     volumes:
