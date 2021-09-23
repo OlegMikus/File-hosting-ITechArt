@@ -98,3 +98,5 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
+
+MIGRATION_MODULES = {'accounts': 'src.accounts.models.migrations'}
