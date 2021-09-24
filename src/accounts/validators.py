@@ -12,7 +12,7 @@ def validate_age(value: int) -> None:
 
 def validate_name(value: str) -> None:
     regex = r"^[a-zA-z]+$"
-    if re.match(regex, value):
+    if not re.match(regex, value):
         raise ValidationError(
             f'{value} is not valid phrase'
         )
