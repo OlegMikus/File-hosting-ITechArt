@@ -40,4 +40,4 @@ class User(BaseModel, AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self) -> str:
-        return f'{self.id} {self.first_name} {self.last_name}'
+        return f'User {self.id}: {self.first_name} {self.last_name}'
