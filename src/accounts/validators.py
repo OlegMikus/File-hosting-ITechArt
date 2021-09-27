@@ -16,3 +16,12 @@ def validate_name(value: str) -> None:
         raise ValidationError(
             f'{value} is not valid phrase'
         )
+
+
+def validate_password(value: str) -> bool:
+    regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{10,20}$'
+    if not re.match(regex, value):
+        raise ValidationError(
+            f'{value} is not valid password'
+        )
+    return True
