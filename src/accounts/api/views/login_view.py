@@ -12,14 +12,14 @@ from src.config.env_consts import DJANGO_SECRET_KEY
 
 def create_tokens(data) -> dict:
     access_token = jwt.encode({
-        'user_id': data.get('id'),
-        'user_email': data.get('email'),
+        'id': data.get('id'),
+        'email': data.get('email'),
         'exp': datetime.utcnow() + timedelta(seconds=180),
     },
         DJANGO_SECRET_KEY)
     refresh_token = jwt.encode({
-        'user_id': data.get('id'),
-        'user_email': data.get('email'),
+        'id': data.get('id'),
+        'email': data.get('email'),
         'exp': datetime.utcnow() + timedelta(days=30),
     },
         DJANGO_SECRET_KEY)
@@ -35,11 +35,11 @@ class UserLoginView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserLoginSerializer
 
-    def post(self, request):
+    def post(self, request) -> Response:
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        tokens = create_tokens(request.data)
+        tokens = create_tokens(serializer.data)
 
         response = {
             'success': 'True',
