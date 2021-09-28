@@ -9,7 +9,6 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = False
@@ -60,7 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'src.config.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -71,7 +69,6 @@ DATABASES = {
         'PORT': DATABASE_POST,
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -88,7 +85,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -99,7 +95,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 AUTH_USER_MODEL = 'accounts.User'
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'src.accounts.authentication.SafeJWTAuthentication',
+    ),
+}
