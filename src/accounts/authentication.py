@@ -1,6 +1,6 @@
 import jwt
 from django.contrib.auth import get_user_model
-from rest_framework import exceptions
+from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication
 
 from src.config.env_consts import DJANGO_SECRET_KEY
@@ -20,15 +20,35 @@ class SafeJWTAuthentication(BaseAuthentication):
                 access_token, DJANGO_SECRET_KEY, algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('access_token expired')
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_403_FORBIDDEN,
+                'message': 'Access token expired',
+                'redirect': 'http:0.0.0.0:8000/api/refresh'
+            }
+
+            raise exceptions.AuthenticationFailed(response)
+
         except IndexError:
             raise exceptions.AuthenticationFailed('Token prefix missing')
 
         user = self.User.objects.filter(id=payload['id']).first()
+
         if user is None:
-            raise exceptions.AuthenticationFailed('User not found')
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_401_UNAUTHORIZED,
+                'message': 'User not found',
+                'redirect': 'http:0.0.0.0:8000/api/login'
+            }
+            raise exceptions.AuthenticationFailed(response)
 
         if not user.is_active:
-            raise exceptions.AuthenticationFailed('user is inactive')
-
+            response = {
+                'success': 'False',
+                'status code': status.HTTP_401_UNAUTHORIZED,
+                'message': 'User is inactive',
+                'redirect': 'http:0.0.0.0:8000/api/login'
+            }
+            raise exceptions.AuthenticationFailed(response)
         return user, None
