@@ -1,11 +1,13 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from src.accounts.api.serializers.user_register_serializer import UserRegistrationSerializer
 
 
 class UserRegistrationView(GenericAPIView):
+    permission_classes = (AllowAny,)
     serializer_class = UserRegistrationSerializer
 
     def post(self, request):
