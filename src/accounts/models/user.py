@@ -3,7 +3,7 @@ from django.db import models
 
 from src.accounts.managers import CustomUserManager
 from src.base.models.base import BaseModel
-from src.accounts.validators import validate_age, validate_name
+from src.accounts.validators import validate_age, validate_name, validate_password
 
 
 class User(BaseModel, AbstractUser):
@@ -32,7 +32,8 @@ class User(BaseModel, AbstractUser):
                                       validators=[validate_age])
 
     password = models.CharField(max_length=256,
-                                help_text='Users password')
+                                help_text='Users password',
+                                validators=[validate_password])
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
