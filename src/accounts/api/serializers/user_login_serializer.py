@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
@@ -14,9 +16,9 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'email', 'password')
 
-    def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
+    def validate(self, attrs: Any) -> Any:
+        email = attrs.get('email')
+        password = attrs.get('password')
         user = authenticate(email=email, password=password)
         if user is None:
             raise serializers.ValidationError(
@@ -24,10 +26,10 @@ class UserLoginSerializer(serializers.ModelSerializer):
             )
         try:
             update_last_login(None, user)
-        except Exception:
+        except Exception as validation_error:
             raise serializers.ValidationError(
                 'User with given email and password does not exists'
-            )
+            ) from validation_error
 
         return {
             'id': user.id,
