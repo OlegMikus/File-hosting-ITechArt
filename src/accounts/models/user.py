@@ -1,3 +1,5 @@
+from typing import List, Any
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -36,7 +38,7 @@ class User(BaseModel, AbstractUser):
                                 validators=[validate_password])
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: List[Any] = []
 
     objects = CustomUserManager()
 

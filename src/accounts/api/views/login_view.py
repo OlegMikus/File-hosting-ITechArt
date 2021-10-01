@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any
 
 import jwt
 from rest_framework import status
@@ -10,7 +11,7 @@ from src.accounts.api.serializers.user_login_serializer import UserLoginSerializ
 from src.config.env_consts import DJANGO_SECRET_KEY
 
 
-def create_tokens(data) -> dict:
+def create_tokens(data: Any) -> Any:
     access_token = jwt.encode({
         'id': data.get('id'),
         'email': data.get('email'),
@@ -35,7 +36,7 @@ class UserLoginView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserLoginSerializer
 
-    def post(self, request) -> Response:
+    def post(self, request: Any) -> Response:
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
