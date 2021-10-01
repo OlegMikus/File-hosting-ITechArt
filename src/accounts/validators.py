@@ -18,7 +18,7 @@ def validate_name(value: str) -> None:
         )
 
 
-def validate_password(value: str) -> bool:
+def validate_password(value: str) -> None:
     regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{10,20}$'
     if not re.match(regex, value):
         raise ValidationError(
