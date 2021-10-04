@@ -18,10 +18,13 @@ def validate_name(value: str) -> None:
         )
 
 
-def validate_password(value: str) -> bool:
+def validate_password(value: str) -> None:
     regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{10,20}$'
     if not re.match(regex, value):
         raise ValidationError(
-            f'{value} is not valid password'
+            'Password must contain: more than 10 chars,'
+            'at least 1 uppercase letter,'
+            'at least 1 lowercase letter,'
+            'at least 1 number,'
+            'at least 1 special char'
         )
-    return True
