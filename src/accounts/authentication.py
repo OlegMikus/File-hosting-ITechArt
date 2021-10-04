@@ -1,20 +1,18 @@
+from functools import wraps
 from typing import Any
-
 import jwt
-from django.contrib.auth import get_user_model
 from rest_framework import exceptions, status
-from rest_framework.authentication import BaseAuthentication
 from rest_framework.response import Response
 
+from src.accounts.models import User
 from src.config.env_consts import DJANGO_SECRET_KEY
 
 
-class SafeJWTAuthentication(BaseAuthentication):
-    User = get_user_model()
+def login_required(func: Any) -> Any:
+    @wraps(func)
+    def decorated(*args: Any, **kwargs: Any) -> Response:
 
-    def authenticate(self, request: Any) -> Any:
-
-        access_token = request.headers.get('access_token')
+        access_token = args[1].headers.get('access_token')
 
         if not access_token:
             return None
@@ -29,22 +27,12 @@ class SafeJWTAuthentication(BaseAuthentication):
                 'message': 'Access token expired',
                 'redirect': 'http:0.0.0.0:8000/api/refresh'
             }
-
             raise exceptions.AuthenticationFailed(response) from expired_signature
-
         except IndexError as index_error:
             raise exceptions.AuthenticationFailed('Token prefix missing') from index_error
 
-        user = self.User.objects.filter(id=payload['id']).first()
+        user = User.objects.filter(id=payload['id']).first()
+        if user and user.is_active:
+            return func(*args, **kwargs)
 
-        response = {
-            'success': 'False',
-            'status code': status.HTTP_401_UNAUTHORIZED,
-            'message': 'User is inactive or not found',
-            'redirect': 'http:0.0.0.0:8000/api/login'
-        }
-
-        if user is None or not user.is_active:
-            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
-
-        return user, None
+    return decorated
