@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Dict
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
@@ -16,20 +16,14 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'password')
 
-    def validate(self, attrs: Any) -> Any:
+    def validate(self, attrs: Dict[str, str]) -> Dict[str, str]:
         username = attrs.get('username')
         password = attrs.get('password')
         user = authenticate(username=username, password=password)
         if user is None:
-            raise serializers.ValidationError(
-                'User with this email and password is not found'
-            )
-        try:
-            update_last_login(None, user)
-        except Exception as validation_error:
-            raise serializers.ValidationError(
-                'User with given email and password does not exists'
-            ) from validation_error
+            raise serializers.ValidationError('User with this email and password is not found')
+
+        update_last_login(None, user)
 
         return {
             'id': user.id,
