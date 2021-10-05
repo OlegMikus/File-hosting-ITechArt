@@ -5,6 +5,7 @@ from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 
 from src.accounts.models.user import User
+from src.base.services.std_error_handler import BadRequestError
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         user = authenticate(username=username, password=password)
         if user is None:
-            raise serializers.ValidationError('User with this email and password is not found')
+            raise BadRequestError('Invalid email or password')
 
         update_last_login(None, user)
 
