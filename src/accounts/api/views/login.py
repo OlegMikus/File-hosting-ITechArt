@@ -1,54 +1,44 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Tuple
 
 import jwt
-from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from rest_framework.request import Request
 
-from src.accounts.api.serializers.user_login_serializer import UserLoginSerializer
+from src.accounts.api.serializers.login_serializer import UserLoginSerializer
+from src.base.services.std_error_handler import BadRequestError
+from src.base.services.responses import OkResponse
 from src.config.env_consts import DJANGO_SECRET_KEY
 
 
-def create_tokens(data: Any) -> Any:
+def create_tokens(user_id: str) -> Tuple[str, str]:
     access_token = jwt.encode({
-        'id': data.get('id'),
-        'email': data.get('email'),
+        'id': user_id,
         'exp': datetime.utcnow() + timedelta(seconds=180),
     },
         DJANGO_SECRET_KEY)
     refresh_token = jwt.encode({
-        'id': data.get('id'),
-        'email': data.get('email'),
+        'id': user_id,
         'exp': datetime.utcnow() + timedelta(days=30),
     },
         DJANGO_SECRET_KEY)
 
-    tokens = {
-        'access_token': access_token,
-        'refresh_token': refresh_token
-    }
-    return tokens
+    return access_token, refresh_token
 
 
 class UserLoginView(GenericAPIView):
-    permission_classes = (AllowAny,)
     serializer_class = UserLoginSerializer
 
-    def post(self, request: Any) -> Response:
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def post(self, request: Request) -> OkResponse:
 
-        tokens = create_tokens(serializer.data)
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            raise BadRequestError(serializer.errors)
+        access_token, refresh_token = create_tokens(serializer.data.get('id'))
 
         response = {
-            'success': 'True',
-            'status code': status.HTTP_200_OK,
-            'message': 'User logged in successfully',
-            'access_token': tokens.get('access_token'),
-            'refresh_token': tokens.get('refresh_token')
+            'id': serializer.data.get('id'),
+            'access_token': access_token,
+            'refresh_token': refresh_token
         }
-        status_code = status.HTTP_200_OK
-
-        return Response(response, status=status_code)
+        return OkResponse(response)

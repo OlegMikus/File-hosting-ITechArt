@@ -1,80 +1,44 @@
 from typing import Any
 
 import jwt
-from django.contrib.auth import get_user_model
-from rest_framework import status
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from rest_framework.request import Request
 
-from src.accounts.api.views.login_view import create_tokens
+from src.accounts.api.views.login import create_tokens
+from src.accounts.models import User
+from src.base.services.std_error_handler import ForbiddenError, BadRequestError
+from src.base.services.responses import OkResponse
 from src.config.env_consts import DJANGO_SECRET_KEY
 
 
 class RefreshView(GenericAPIView):
+    queryset = User
 
-    permission_classes = (AllowAny,)
-    User = get_user_model()
-
-    def get(self, request: Any) -> Response:
+    def get(self, request: Request, *args: Any, **kwargs: Any) -> OkResponse:
 
         refresh_token = request.headers.get('refresh_token')
+
         if not refresh_token:
-            response = {
-                'success': 'False',
-                'status code': status.HTTP_403_FORBIDDEN,
-                'message': 'Authentication credentials were not provided.',
-                'redirect': 'http:0.0.0.0:8000/api/login'
-            }
-            return Response(response, status=status.HTTP_403_FORBIDDEN)
+            raise BadRequestError('Missing token')
+
         try:
             payload = jwt.decode(
                 refresh_token, DJANGO_SECRET_KEY, algorithms=['HS256'])
+
+            user = self.queryset.objects.filter(id=payload.get('id')).first()
+            if not user.is_active or user is None:
+                raise ForbiddenError('No such user or user is not active')
+
+            access_token, refresh_token = create_tokens(payload.get('id'))
+
+            response = {
+                'id': payload.get('id'),
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }
+
+            return OkResponse(response)
         except jwt.ExpiredSignatureError as expired_signature:
-            response = {
-                'success': 'False',
-                'status code': status.HTTP_403_FORBIDDEN,
-                'message': 'Refresh token expired',
-                'redirect': 'http:0.0.0.0:8000/api/login'
-            }
-            raise AuthenticationFailed(response) from expired_signature
+            raise ForbiddenError(expired_signature) from expired_signature
         except jwt.InvalidTokenError as invalid_token:
-            response = {
-                'success': 'False',
-                'status code': status.HTTP_403_FORBIDDEN,
-                'message': 'Invalid token',
-                'redirect': 'http:0.0.0.0:8000/api/login'
-            }
-            raise AuthenticationFailed(response) from invalid_token
-
-        user = self.User.objects.filter(id=payload.get('id')).first()
-
-        if user is None:
-            response = {
-                'success': 'False',
-                'status code': status.HTTP_401_UNAUTHORIZED,
-                'message': 'User not found',
-                'redirect': 'http:0.0.0.0:8000/api/login'
-            }
-            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
-
-        if not user.is_active:
-            response = {
-                'success': 'False',
-                'status code': status.HTTP_401_UNAUTHORIZED,
-                'message': 'User is inactive',
-                'redirect': 'http:0.0.0.0:8000/api/login'
-            }
-            return Response(response, status=status.HTTP_401_UNAUTHORIZED)
-
-        tokens = create_tokens(payload)
-        response = {
-            'success': 'True',
-            'status code': status.HTTP_200_OK,
-            'message': 'IF U see this, than your token was refresh correctly',
-            'access_token': tokens.get('access_token'),
-            'refresh_token': tokens.get('refresh_token')
-        }
-
-        return Response(response, status=status.HTTP_200_OK)
+            raise ForbiddenError(invalid_token) from invalid_token
