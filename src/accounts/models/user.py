@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models

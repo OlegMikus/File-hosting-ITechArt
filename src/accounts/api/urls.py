@@ -1,11 +1,11 @@
-from django.conf.urls import url
+from django.urls import path
 
-from src.accounts.api.views.login_view import UserLoginView
-from src.accounts.api.views.register_views import UserRegistrationView
-from src.accounts.api.views.refresh_view import RefreshView
+from src.accounts.api.views.login import UserLoginView
+from src.accounts.api.views.signup import UserSignUpView
+from src.accounts.api.views.refresh import RefreshView
 
 urlpatterns = [
-    url(r'^signup', UserRegistrationView.as_view()),
-    url(r'^login', UserLoginView.as_view()),
-    url(r'^refresh', RefreshView.as_view()),
+    path('signup/', UserSignUpView.as_view(), name='signup'),
+    path('login/', UserLoginView.as_view(), name='login'),
+    path('refresh/', RefreshView.as_view(), name='refresh'),
 ]
