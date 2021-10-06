@@ -28,3 +28,12 @@ def validate_password(value: str) -> None:
             'at least 1 number,'
             'at least 1 special char'
         )
+
+
+def username_validator(value: str) -> None:
+    regex = r'^[\w.@+-]+\Z'
+    if not re.match(regex, value):
+        raise ValidationError(
+            'Enter a valid username. This value may contain only letters, '
+            'numbers, and @/./+/-/_ characters.'
+        )

@@ -14,12 +14,12 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'password')
+        fields = ('id', 'username', 'password')
 
     def validate(self, attrs: Any) -> Any:
-        email = attrs.get('email')
+        username = attrs.get('username')
         password = attrs.get('password')
-        user = authenticate(email=email, password=password)
+        user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError(
                 'User with this email and password is not found'
@@ -33,5 +33,5 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
         return {
             'id': user.id,
-            'email': user.email
+            'username': user.username
         }

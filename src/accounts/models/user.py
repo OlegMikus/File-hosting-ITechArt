@@ -5,7 +5,7 @@ from django.db import models
 
 from src.accounts.managers import CustomUserManager
 from src.base.models.base import BaseModel
-from src.accounts.validators import validate_age, validate_name, validate_password
+from src.accounts.validators import validate_age, validate_name, validate_password, username_validator
 
 
 class User(BaseModel, AbstractUser):
@@ -14,7 +14,12 @@ class User(BaseModel, AbstractUser):
 
     All fields are required
     """
-    username = None
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        validators=[username_validator]
+    )
 
     first_name = models.CharField(max_length=30,
                                   validators=[validate_name],
@@ -28,19 +33,18 @@ class User(BaseModel, AbstractUser):
 
     email = models.EmailField(max_length=254,
                               unique=True,
+                              blank=True,
                               help_text='Users email')
 
     age = models.PositiveIntegerField(help_text='Users age',
+                                      null=True,
                                       validators=[validate_age])
 
     password = models.CharField(max_length=256,
                                 help_text='Users password',
                                 validators=[validate_password])
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS: List[Any] = []
-
     objects = CustomUserManager()
 
     def __str__(self) -> str:
-        return f'User {self.id}: {self.first_name} {self.last_name}'
+        return f'User {self.id}: {self.username}'
