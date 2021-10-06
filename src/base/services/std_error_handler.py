@@ -34,7 +34,6 @@ def generate_response(error_detail: Tuple[Any, ...] = None,
 
 def std_error_handler(exc: Exception, context: Any) -> Response:
     if isinstance(exc, BadRequestError):
-        print(exc.args)
         return Response(generate_response(error_detail=exc.args, state=status.HTTP_400_BAD_REQUEST))
 
     if isinstance(exc, NotFoundError):
