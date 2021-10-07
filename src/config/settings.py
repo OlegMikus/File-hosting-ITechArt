@@ -98,7 +98,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 AUTH_USER_MODEL = 'accounts.User'
-print(STATIC_ROOT)
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.base.services.std_error_handler.std_error_handler'
 }
