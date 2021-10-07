@@ -7,7 +7,7 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DATABASE_HOST, \
     DATABASE_POST
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = DJANGO_SECRET_KEY
 
@@ -98,7 +98,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 AUTH_USER_MODEL = 'accounts.User'
-
+print(STATIC_ROOT)
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.base.services.std_error_handler.std_error_handler'
 }
