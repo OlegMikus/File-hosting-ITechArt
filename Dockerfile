@@ -13,4 +13,3 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --deploy --ignore-pipfile
 COPY src .
 COPY ./manage.py .
-COPY ./static .
