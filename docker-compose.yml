@@ -1,0 +1,56 @@
+version: '3.9'
+
+
+networks:
+  trainee_network:
+    driver: bridge
+
+
+services:
+  app_auth:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
+    volumes:
+      - .:/app
+      - ./static/:/static
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - trainee_network
+
+  webserver:
+    build: ./srv/webserver
+    restart: always
+    volumes:
+      - ./static/:/static
+      - ./srv/webserver/nginx.conf:/ect/nginx/nginx.conf
+      - ./srv/webserver/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - 1337:80
+    depends_on:
+      - app_auth
+    networks:
+      - trainee_network
+
+  db:
+    image: postgres:12.8
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_USER: "${DATABASE_USER}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE_NAME}"
+    ports:
+      - 5432:5432
+    networks:
+      - trainee_network
+
+volumes:
+  postgres_data:
