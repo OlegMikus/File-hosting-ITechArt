@@ -27,6 +27,7 @@ INSTALLED_APPS = [
 
     'src.accounts',
     'src.base',
+    'src.files'
 ]
 
 MIDDLEWARE = [
