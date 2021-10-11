@@ -11,7 +11,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./srv/app/Dockerfile
     command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
     volumes:
       - .:/app
@@ -26,10 +26,12 @@ services:
       - trainee_network
 
   webserver:
-    build: ./nginx
+    build: ./srv/webserver
     restart: always
     volumes:
       - ./static/:/static
+      - ./srv/webserver/nginx.conf:/ect/nginx/nginx.conf
+      - ./srv/webserver/conf.d/:/etc/nginx/conf.d/
     ports:
       - 1337:80
     depends_on:
