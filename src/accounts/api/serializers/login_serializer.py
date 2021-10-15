@@ -10,7 +10,7 @@ from src.base.services.std_error_handler import BadRequestError
 
 class UserLoginSerializer(serializers.ModelSerializer):
 
-    email = serializers.CharField(max_length=255)
+    username = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=128, write_only=True)
 
     class Meta:
@@ -22,7 +22,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         password = attrs.get('password')
         user = authenticate(username=username, password=password)
         if user is None:
-            raise BadRequestError('Invalid email or password')
+            raise BadRequestError('Invalid username or password')
 
         update_last_login(None, user)
 
