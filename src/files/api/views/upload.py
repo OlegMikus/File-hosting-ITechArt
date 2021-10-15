@@ -19,7 +19,6 @@ class UploadView(GenericAPIView):
     file_storage = os.path.expandvars('file_storage')
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        print(request.query_params)
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
