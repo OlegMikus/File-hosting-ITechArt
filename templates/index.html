@@ -36,10 +36,10 @@
 
       <script>
         var r = new Resumable({
-            target:'/files/upload/',
-            chunkSize:16*1024*1024,
+            target:'/api/files/upload/chunks/',
+            chunkSize:50*1024*1024,
             simultaneousUploads:4,
-            testChunks:false,
+            testChunks:true,
             throttleProgressCallbacks:1
           });
         // Resumable.js isn't supported, fall back on a different method
