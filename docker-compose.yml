@@ -16,7 +16,6 @@ services:
     volumes:
       - .:/app
       - ./static/:/static
-      - ./media/:/media
     ports:
       - 8000:8000
     expose:
@@ -30,7 +29,6 @@ services:
     build: ./srv/webserver
     restart: always
     volumes:
-      - ./media/:/media
       - ./static/:/static
       - ./srv/webserver/nginx.conf:/etc/nginx/nginx.conf
       - ./srv/webserver/conf.d/:/etc/nginx/conf.d/
