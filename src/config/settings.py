@@ -14,7 +14,7 @@ SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = DJANGO_DEBUG_STATUS
 
-ALLOWED_HOSTS = ['0.0.0.0', ]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
