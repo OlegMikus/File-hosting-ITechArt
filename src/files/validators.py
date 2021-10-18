@@ -2,7 +2,17 @@ from typing import Any
 
 import magic
 
-ALLOWED_FORMATS = {}
+JPG = 'image/jpeg'
+GIF = 'image/gif'
+TIFF = 'image/tiff'
+PNG = 'image/png'
+SVG = 'image/swg+xml'
+DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+XLS = ''
+PDF = 'application/pdf'
+TXT = 'text/plain'
+
+ALLOWED_FORMATS = {JPG, GIF, TIFF, PNG, SVG, DOCX, XLS, PDF, TXT}
 
 
 def format_validator(value: Any) -> bool:
