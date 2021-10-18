@@ -14,7 +14,7 @@ def login_required(func: Any) -> Any:
         access_token = None
         for arg in args:
             if isinstance(arg, Request):
-                access_token = arg.headers.get('Access-token')
+                access_token = arg.headers.get('Access-Token')
 
         if not access_token:
             raise BadRequestError('Missing token')
