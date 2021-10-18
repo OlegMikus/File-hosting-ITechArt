@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from src.base.services.responses import OkResponse, NotFoundResponse
 from src.base.services.std_error_handler import BadRequestError
-from src.files.api.serializers.query_params_serializer import QuerySerializer
+from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 
 
 def get_chunk_name(uploaded_filename, chunk_number):
@@ -19,7 +19,8 @@ class UploadView(GenericAPIView):
     file_storage = os.path.expandvars('file_storage')
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = QuerySerializer(data=request.query_params)
+        print(request.query_params)
+        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
 
@@ -37,7 +38,7 @@ class UploadView(GenericAPIView):
         return NotFoundResponse()
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = QuerySerializer(data=request.query_params)
+        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
 

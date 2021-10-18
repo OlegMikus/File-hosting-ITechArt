@@ -7,7 +7,7 @@ from rest_framework.request import Request
 
 from src.base.services.responses import OkResponse
 from src.base.services.std_error_handler import BadRequestError
-from src.files.api.serializers.query_params_serializer import QuerySerializer
+from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.files.api.views.upload import get_chunk_name
 
 
@@ -16,7 +16,7 @@ class BuildFileView(GenericAPIView):
     file_storage = os.path.expandvars('file_storage')
 
     def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = QuerySerializer(data=request.query_params)
+        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
         total_chunks = serializer.data.get('resumableTotalChunks')
