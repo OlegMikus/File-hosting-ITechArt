@@ -7,9 +7,6 @@ from src.files.models.files_storage import FilesStorage
 
 class File(BaseModel):
 
-    class Meta:
-        db_table = 'file'
-
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     destination = models.ForeignKey(FilesStorage, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=256)
@@ -17,3 +14,6 @@ class File(BaseModel):
     type = models.CharField(max_length=10)
     size = models.BigIntegerField()
     hash = models.CharField(max_length=32)
+
+    class Meta:
+        db_table = 'file'
