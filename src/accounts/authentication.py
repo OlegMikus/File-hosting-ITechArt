@@ -10,8 +10,7 @@ from src.config.env_consts import DJANGO_SECRET_KEY
 def login_required(func: Any) -> Any:
     @wraps(func)
     def decorated(*args: Any, **kwargs: Any) -> Any:
-
-        access_token = args[1].headers.get('access_token')
+        access_token = args[1].headers.get('Access-Token')
 
         if not access_token:
             raise BadRequestError('Missing token')
