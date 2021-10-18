@@ -10,7 +10,7 @@ class FilesStorage(BaseModel):
         (FILE_STORAGE__TYPE__TEMP, 'Temporary Storage'),
         (FILE_STORAGE__TYPE__PERMANENT, 'Permanent Storage'),
     ))
-    destination = models.CharField(max_length=32)
+    destination = models.CharField(max_length=128)
 
     class Meta:
         db_table = 'files_storage'
