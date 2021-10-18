@@ -14,7 +14,7 @@ class File(BaseModel):
     description = models.TextField()
     type = models.CharField(max_length=10)
     size = models.BigIntegerField()
-    hash = models.CharField(max_length=32)
+    hash = models.CharField(max_length=512)
 
     class Meta:
         db_table = 'file'
