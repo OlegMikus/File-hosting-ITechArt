@@ -6,7 +6,7 @@ from src.files.constants import FILE_STORAGE__TYPE__TEMP, FILE_STORAGE__TYPE__PE
 
 class FilesStorage(BaseModel):
 
-    storage_type = models.CharField(max_length=32, choices=(
+    type = models.CharField(max_length=32, choices=(
         (FILE_STORAGE__TYPE__TEMP, 'Temporary Storage'),
         (FILE_STORAGE__TYPE__PERMANENT, 'Permanent Storage'),
     ))
