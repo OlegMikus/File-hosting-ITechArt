@@ -16,7 +16,7 @@ class RefreshView(GenericAPIView):
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> OkResponse:
 
-        refresh_token = request.headers.get('refresh_token')
+        refresh_token = request.headers.get('Refresh-Token')
 
         if not refresh_token:
             raise BadRequestError('Missing token')
