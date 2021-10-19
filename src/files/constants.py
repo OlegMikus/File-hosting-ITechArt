@@ -1,0 +1,2 @@
+FILE_STORAGE__TYPE__TEMP = 'temp'
+FILE_STORAGE__TYPE__PERMANENT = 'permanent'
