@@ -36,6 +36,7 @@
       <ul class="resumable-list"></ul>
 
       <script>
+        let hashChunk;
         const place = document.querySelector(".resumable-drop");
         place.ondragover = function() {
           return false;
@@ -53,8 +54,7 @@
 
           reader.onload = function(event) {
             var binary = event.target.result;
-            var md5 = CryptoJS.MD5(binary).toString()
-            console.log(md5);
+            hashChunk = CryptoJS.MD5(binary).toString();
           };
 
           reader.readAsBinaryString(file);
@@ -73,7 +73,7 @@
             simultaneousUploads:4,
             testChunks:true,
             throttleProgressCallbacks:1,
-          query: {}
+          query: {resumableHash: hashChunk}
           });
         // Resumable.js isn't supported, fall back on a different method
         if(!r.support) {
