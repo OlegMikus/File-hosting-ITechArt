@@ -13,6 +13,7 @@
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
       <script src="/static/resumable.js"></script>
+      <script src="/static/hash_count.js"></script>
 
       <div class="resumable-drop">
         Drop your files here or <a class="resumable-browse"><u>select from your computer</u></a>
@@ -35,12 +36,44 @@
       <ul class="resumable-list"></ul>
 
       <script>
+        const place = document.querySelector(".resumable-drop");
+        place.ondragover = function() {
+          return false;
+        };
+
+        place.ondragend = function() {
+          return false;
+        };
+
+        place.ondrop = function(event) {
+          event.preventDefault();
+
+          var file = event.dataTransfer.files[0];
+          var reader = new FileReader();
+
+          reader.onload = function(event) {
+            var binary = event.target.result;
+            var md5 = CryptoJS.MD5(binary).toString()
+            console.log(md5);
+          };
+
+          reader.readAsBinaryString(file);
+        };
+        // function hash () {
+        //   const fList = this.files;
+        //   const reader = new FileReader();
+        //
+        //   reader.onload = () ==> {
+        //     return {sha256(reader.result)};
+        //   }
+        // }
         var r = new Resumable({
             target:'/api/files/upload/chunks/',
             chunkSize:50*1024*1024,
             simultaneousUploads:4,
             testChunks:true,
-            throttleProgressCallbacks:1
+            throttleProgressCallbacks:1,
+          query: {}
           });
         // Resumable.js isn't supported, fall back on a different method
         if(!r.support) {
