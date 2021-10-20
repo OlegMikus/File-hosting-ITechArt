@@ -6,6 +6,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from src.accounts.authentication import login_required
+from src.accounts.models import User
 from src.base.services.responses import CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
 from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
@@ -22,12 +23,11 @@ def get_filename_and_type(data: str) -> Tuple[str, str]:
 class NonChunkUploadView(GenericAPIView):
 
     @login_required
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
         if not request.FILES.get('file'):
             raise BadRequestError('File is missing')
 
-        user = kwargs.get('user')
         storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
         hash_from_request = request.data.get('hash')
         description = request.data.get('description')
