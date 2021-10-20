@@ -1,7 +1,7 @@
 import hashlib
 
 
-def hash_count(file):
+def calculate_hash_md5(file):
     h = hashlib.md5()
 
     with open(file, 'rb') as file:
