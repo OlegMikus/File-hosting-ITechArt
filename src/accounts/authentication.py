@@ -18,8 +18,8 @@ def login_required(func: Any) -> Any:
             payload = jwt.decode(
                 access_token, DJANGO_SECRET_KEY, algorithms=['HS256'])
             user = User.objects.filter(id=payload.get('id')).first()
-
             if user and user.is_active:
+                kwargs = {'user': user}
                 return func(*args, **kwargs)
 
         except jwt.ExpiredSignatureError as expired_signature:
