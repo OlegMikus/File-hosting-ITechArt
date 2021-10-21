@@ -73,7 +73,8 @@
             simultaneousUploads:4,
             testChunks:true,
             throttleProgressCallbacks:1,
-          query: {resumableHash: hashChunk}
+            query: {resumableHash: hashChunk,
+                    resumableDescription: 'now its just to test'}
           });
         // Resumable.js isn't supported, fall back on a different method
         if(!r.support) {
