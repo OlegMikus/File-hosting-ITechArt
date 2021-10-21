@@ -8,8 +8,8 @@ from src.base.services.std_error_handler import generate_response
 
 class CreatedResponse(Response):
 
-    def __init__(self, data: Dict[str, Any]) -> None:
-        super().__init__(generate_response(result=data, total_count=1),
+    def __init__(self, data: Dict[str, Any] = None) -> None:
+        super().__init__(data=generate_response(result=data, total_count=1),
                          status=status.HTTP_201_CREATED)
 
 
