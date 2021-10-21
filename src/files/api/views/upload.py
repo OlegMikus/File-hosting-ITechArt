@@ -5,29 +5,38 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.base.services.responses import OkResponse, NotFoundResponse
+from src.accounts.authentication import login_required
+from src.accounts.models import User
+from src.base.services.responses import OkResponse, NotFoundResponse, CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
 from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
+from src.files.constants import FILE_STORAGE__TYPE__TEMP
+from src.files.models import FilesStorage
 
 
-def get_chunk_name(uploaded_filename, chunk_number):
+def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
     return uploaded_filename + f'_part_{chunk_number}'
 
 
 class UploadView(GenericAPIView):
 
-    file_storage = os.path.expandvars('file_storage')
+    file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
+    file_storage_path = file_storage.destination
 
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    @login_required
+    def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
+        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
+        if not serializer.is_valid():
+            raise BadRequestError('Wrong query parameters')
+
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
+        identifier = serializer.validated_data.get('identifier')
+        filename = serializer.validated_data.get('filename')
+        chunk_number = serializer.validated_data.get('chunk_number')
 
-        identifier = serializer.data.get('resumableIdentifier')
-        filename = serializer.data.get('resumableFilename')
-        chunk_number = serializer.data.get('resumableChunkNumber')
-
-        temp_files_chunks_storage = os.path.join(self.file_storage, identifier)
+        temp_files_chunks_storage = os.path.join(self.file_storage_path, str(user.id), identifier)
 
         chunk_name = get_chunk_name(filename, chunk_number)
         path_to_store_chunk = os.path.join(temp_files_chunks_storage, chunk_name)
@@ -36,19 +45,19 @@ class UploadView(GenericAPIView):
             return OkResponse()
         return NotFoundResponse()
 
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    @login_required
+    def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
 
-        identifier = serializer.data.get('resumableIdentifier')
-        filename = serializer.data.get('resumableFilename')
-        chunk_number = serializer.data.get('resumableChunkNumber')
+        identifier = serializer.validated_data.get('identifier')
+        filename = serializer.validated_data.get('filename')
+        chunk_number = serializer.validated_data.get('chunk_number')
 
         chunk_data = request.FILES.get('file')
-        temp_files_chunks_storage = os.path.join(self.file_storage, identifier)
-        if not os.path.isdir(temp_files_chunks_storage):
-            os.makedirs(temp_files_chunks_storage)
+        temp_files_chunks_storage = os.path.join(self.file_storage_path, str(user.id), identifier)
+        os.makedirs(temp_files_chunks_storage, exist_ok=True)
 
         chunk_name = get_chunk_name(filename, chunk_number)
         path_to_store_chunk = os.path.join(temp_files_chunks_storage, chunk_name)
@@ -57,4 +66,4 @@ class UploadView(GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return OkResponse()
+        return CreatedResponse()

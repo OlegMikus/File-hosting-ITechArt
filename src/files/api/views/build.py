@@ -1,44 +1,60 @@
 import os
-from typing import Any
+from typing import Any, List, Dict
 
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 
+from src.accounts.authentication import login_required
+from src.accounts.models import User
 from src.base.services.responses import OkResponse
 from src.base.services.std_error_handler import BadRequestError
 from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.files.api.views.upload import get_chunk_name
+from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
+from src.files.models import FilesStorage, File
+
+
+def create_database_record(user: User, storage: FilesStorage, target_file_path: str, data: Dict[str, Any]) -> None:
+    File.objects.create(user=user, storage=storage,
+                        destination=target_file_path, name=data.get('filename'),
+                        description=data.get('description'), type=data.get('extension'),
+                        size=data.get('total_size'), hash=data.get('hash_sum'))
+
+
+def build_chunks_to_file(chunks_paths: List[str], target_file_name) -> None:
+    with open(target_file_name, 'ab') as target_file:
+        for path in chunks_paths:
+            with open(path, 'rb') as stored_chunk_file:
+                target_file.write(stored_chunk_file.read())
+            os.unlink(path)
 
 
 class BuildFileView(GenericAPIView):
 
-    file_storage = os.path.expandvars('file_storage')
+    file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
 
-    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    @login_required
+    def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError()
-        total_chunks = serializer.data.get('resumableTotalChunks')
-        filename = serializer.data.get('resumableFilename')
-        identifier = serializer.data.get('resumableIdentifier')
 
-        temp_files_chunks_storage = os.path.join(self.file_storage, identifier)
+        total_chunks = serializer.validated_data.get('total_chunks')
+        filename = serializer.validated_data.get('filename')
+        identifier = serializer.validated_data.get('identifier')
 
+        temp_files_chunks_storage = os.path.join(self.file_storage.destination, str(user.id), identifier)
+        target_file_path = os.path.join(self.file_storage, filename)
         chunks_paths = [
             os.path.join(temp_files_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
+
         upload_complete = all([os.path.exists(path) for path in chunks_paths])
 
         if upload_complete:
-            target_file_name = os.path.join(self.file_storage, filename)
-            with open(target_file_name, 'ab') as target_file:
-                for path in chunks_paths:
-                    with open(path, 'rb') as stored_chunk_file:
-                        target_file.write(stored_chunk_file.read())
-                    stored_chunk_file.close()
-                    os.unlink(path)
-            target_file.close()
+            build_chunks_to_file(chunks_paths, target_file_path)
             os.rmdir(temp_files_chunks_storage)
 
+        create_database_record(user, self.file_storage, target_file_path, serializer.validated_data)
         return OkResponse()
