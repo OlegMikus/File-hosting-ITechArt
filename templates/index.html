@@ -1,142 +1,140 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Resumable.js DRF</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />
-  </head>
-  <body>
-    <div id="frame">
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+</head>
+<body>
+<div id="frame">
 
-      <h1>File hosting project. Created by Mikus Oleg</h1>
-            <hr/>
+    <h1>File hosting project. Created by Mikus Oleg</h1>
+    <hr/>
 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-      <script src="/static/resumable.js"></script>
-      <script src="/static/hash_count.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="/static/resumable.js"></script>
+    <script src="/static/hash_count.js"></script>
 
-      <div class="resumable-drop">
+    <div class="resumable-drop">
         Drop your files here or <a class="resumable-browse"><u>select from your computer</u></a>
-      </div>
+    </div>
 
-      <div class="resumable-progress">
+    <div class="resumable-progress">
         <table>
-          <tr>
-            <td width="100%"><div class="progress-container"><div class="progress-bar"></div></div></td>
-            <td class="progress-text" nowrap="nowrap"></td>
-            <td class="progress-pause" nowrap="nowrap">
-              <a href="#" onclick="r.upload(); return(false);" class="progress-resume-link"><img src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/resume.png" title="Resume upload" /></a>
-              <a href="#" onclick="r.pause(); return(false);" class="progress-pause-link"><img src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/pause.png" title="Pause upload" /></a>
-              <a href="#" onclick="r.cancel(); return(false);" class="progress-cancel-link"><img src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/cancel.png" title="Cancel upload" /></a>
-            </td>
-          </tr>
+            <tr>
+                <td width="100%">
+                    <div class="progress-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                </td>
+                <td class="progress-text" nowrap="nowrap"></td>
+                <td class="progress-pause" nowrap="nowrap">
+                    <a href="#" onclick="r.upload(); return(false);" class="progress-resume-link"><img
+                            src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/resume.png"
+                            title="Resume upload"/></a>
+                    <a href="#" onclick="r.pause(); return(false);" class="progress-pause-link"><img
+                            src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/pause.png"
+                            title="Pause upload"/></a>
+                    <a href="#" onclick="r.cancel(); return(false);" class="progress-cancel-link"><img
+                            src="https://raw.githubusercontent.com/GuDuJian-J-Zhang/resumable.js/feature.python-flask.dev/samples/python-flask/static/cancel.png"
+                            title="Cancel upload"/></a>
+                </td>
+            </tr>
         </table>
-      </div>
+    </div>
 
-      <ul class="resumable-list"></ul>
+    <ul class="resumable-list"></ul>
 
-      <script>
+    <script>
         let hashChunk;
         const place = document.querySelector(".resumable-drop");
-        place.ondragover = function() {
-          return false;
+
+        place.ondrop = function (event) {
+            event.preventDefault();
+
+            var file = event.dataTransfer.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (event) {
+                var binary = event.target.result;
+                hashChunk = CryptoJS.MD5(binary).toString();
+            };
+
+            reader.readAsBinaryString(file);
         };
 
-        place.ondragend = function() {
-          return false;
-        };
-
-        place.ondrop = function(event) {
-          event.preventDefault();
-
-          var file = event.dataTransfer.files[0];
-          var reader = new FileReader();
-
-          reader.onload = function(event) {
-            var binary = event.target.result;
-            hashChunk = CryptoJS.MD5(binary).toString();
-          };
-
-          reader.readAsBinaryString(file);
-        };
-        // function hash () {
-        //   const fList = this.files;
-        //   const reader = new FileReader();
-        //
-        //   reader.onload = () ==> {
-        //     return {sha256(reader.result)};
-        //   }
-        // }
         var r = new Resumable({
-            target:'/api/files/upload/chunks/',
-            chunkSize:50*1024*1024,
-            simultaneousUploads:4,
-            testChunks:true,
-            throttleProgressCallbacks:1,
-            query: {resumableHash: hashChunk,
-                    resumableDescription: 'now its just to test'}
-          });
+            target: '/api/files/upload/chunks/',
+            chunkSize: 50 * 1024 * 1024,
+            simultaneousUploads: 4,
+            testChunks: true,
+            throttleProgressCallbacks: 1,
+            query: {
+                resumableHash: hashChunk,
+                resumableDescription: 'now its just to test'
+            }
+        });
         // Resumable.js isn't supported, fall back on a different method
-        if(!r.support) {
-          $('.resumable-error').show();
+        if (!r.support) {
+            $('.resumable-error').show();
         } else {
-          // Show a place for dropping/selecting files
-          $('.resumable-drop').show();
-          r.assignDrop($('.resumable-drop')[0]);
-          r.assignBrowse($('.resumable-browse')[0]);
+            // Show a place for dropping/selecting files
+            $('.resumable-drop').show();
+            r.assignDrop($('.resumable-drop')[0]);
+            r.assignBrowse($('.resumable-browse')[0]);
 
-          // Handle file add event
-          r.on('fileAdded', function(file){
-              // Show progress pabr
-              $('.resumable-progress, .resumable-list').show();
-              // Show pause, hide resume
-              $('.resumable-progress .progress-resume-link').hide();
-              $('.resumable-progress .progress-pause-link').show();
-              // Add the file to the list
-              $('.resumable-list').append('<li class="resumable-file-'+file.uniqueIdentifier+'">Uploading <span class="resumable-file-name"></span> <span class="resumable-file-progress"></span>');
-              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-name').html(file.fileName);
-              // Actually start the upload
-              r.upload();
+            // Handle file add event
+            r.on('fileAdded', function (file) {
+                // Show progress pabr
+                $('.resumable-progress, .resumable-list').show();
+                // Show pause, hide resume
+                $('.resumable-progress .progress-resume-link').hide();
+                $('.resumable-progress .progress-pause-link').show();
+                // Add the file to the list
+                $('.resumable-list').append('<li class="resumable-file-' + file.uniqueIdentifier + '">Uploading <span class="resumable-file-name"></span> <span class="resumable-file-progress"></span>');
+                $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-name').html(file.fileName);
+                // Actually start the upload
+                r.upload();
             });
-          r.on('pause', function(){
-              // Show resume, hide pause
-              $('.resumable-progress .progress-resume-link').show();
-              $('.resumable-progress .progress-pause-link').hide();
+            r.on('pause', function () {
+                // Show resume, hide pause
+                $('.resumable-progress .progress-resume-link').show();
+                $('.resumable-progress .progress-pause-link').hide();
             });
-          r.on('complete', function(){
-              // Hide pause/resume when the upload has completed
-              $('.resumable-progress .progress-resume-link, .resumable-progress .progress-pause-link').hide();
+            r.on('complete', function () {
+                // Hide pause/resume when the upload has completed
+                $('.resumable-progress .progress-resume-link, .resumable-progress .progress-pause-link').hide();
             });
-          r.on('fileSuccess', function(file,message){
-              // Reflect that the file upload has completed
-              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-progress').html('(completed)');
+            r.on('fileSuccess', function (file, message) {
+                // Reflect that the file upload has completed
+                $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html('(completed)');
             });
-          r.on('fileError', function(file, message){
-              // Reflect that the file upload has resulted in error
-              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-progress').html('(file could not be uploaded: '+message+')');
+            r.on('fileError', function (file, message) {
+                // Reflect that the file upload has resulted in error
+                $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html('(file could not be uploaded: ' + message + ')');
             });
-          r.on('fileProgress', function(file){
-              // Handle progress for both the file and the overall upload
-              $('.resumable-file-'+file.uniqueIdentifier+' .resumable-file-progress').html(Math.floor(file.progress()*100) + '%');
-              $('.progress-bar').css({width:Math.floor(r.progress()*100) + '%'});
+            r.on('fileProgress', function (file) {
+                // Handle progress for both the file and the overall upload
+                $('.resumable-file-' + file.uniqueIdentifier + ' .resumable-file-progress').html(Math.floor(file.progress() * 100) + '%');
+                $('.progress-bar').css({width: Math.floor(r.progress() * 100) + '%'});
             });
-          r.on('cancel', function(){
-            $('.resumable-file-progress').html('canceled');
-          });
-          r.on('uploadStart', function(){
-              // Show pause, hide resume
-              $('.resumable-progress .progress-resume-link').hide();
-              $('.resumable-progress .progress-pause-link').show();
-          });
-              XMLHttpRequest.prototype.open = (function (open) {
+            r.on('cancel', function () {
+                $('.resumable-file-progress').html('canceled');
+            });
+            r.on('uploadStart', function () {
+                // Show pause, hide resume
+                $('.resumable-progress .progress-resume-link').hide();
+                $('.resumable-progress .progress-pause-link').show();
+            });
+            XMLHttpRequest.prototype.open = (function (open) {
                 return function (method, url, async) {
-                  open.apply(this, arguments);
-                  this.setRequestHeader('Access-Token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjdlYjEyOWQxLTFkZTUtNDJmNC05MTE2LWI1Mjc0NzA1YThlYyIsImV4cCI6MTY1MDQzOTM4N30.Z5KsORHlNFqpWWU30JkNIO9L8ed40d1NUpxOzQ36vXE');
+                    open.apply(this, arguments);
+                    this.setRequestHeader('Access-Token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjdlYjEyOWQxLTFkZTUtNDJmNC05MTE2LWI1Mjc0NzA1YThlYyIsImV4cCI6MTY1MDQzOTM4N30.Z5KsORHlNFqpWWU30JkNIO9L8ed40d1NUpxOzQ36vXE');
                 };
-              })(XMLHttpRequest.prototype.open);
+            })(XMLHttpRequest.prototype.open);
         }
-      </script>
+    </script>
 
-    </div>
-  </body>
+</div>
+</body>
 </html>
