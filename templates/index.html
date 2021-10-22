@@ -128,6 +128,12 @@
               $('.resumable-progress .progress-resume-link').hide();
               $('.resumable-progress .progress-pause-link').show();
           });
+              XMLHttpRequest.prototype.open = (function (open) {
+                return function (method, url, async) {
+                  open.apply(this, arguments);
+                  this.setRequestHeader('Access-Token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjdlYjEyOWQxLTFkZTUtNDJmNC05MTE2LWI1Mjc0NzA1YThlYyIsImV4cCI6MTY1MDQzOTM4N30.Z5KsORHlNFqpWWU30JkNIO9L8ed40d1NUpxOzQ36vXE');
+                };
+              })(XMLHttpRequest.prototype.open);
         }
       </script>
 
