@@ -24,7 +24,7 @@ class NonChunkUploadView(GenericAPIView):
             raise BadRequestError('File is missing')
 
         storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
-        hash_from_request = request.data.get('hash_sum')
+        expected_hash = request.data.get('hash_sum')
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
@@ -39,9 +39,9 @@ class NonChunkUploadView(GenericAPIView):
             for chunk in file_data.chunks():
                 file.write(chunk)
 
-        file_hash = calculate_hash_md5(file_path)
+        actual_hash = calculate_hash_md5(file_path)
 
-        if hash_from_request != file_hash:
+        if expected_hash != actual_hash:
             raise BadRequestError('Hash sum does not match')
 
         create_database_record(user, storage, file_path, request.data)

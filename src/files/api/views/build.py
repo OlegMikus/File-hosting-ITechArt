@@ -15,15 +15,19 @@ from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
 from src.files.models import FilesStorage, File
 
 
-def create_database_record(user: User, storage: FilesStorage, target_file_path: str, data: Dict[str, Any]) -> None:
+def create_database_record(user: User,
+                           storage: FilesStorage,
+                           file_path: str,
+                           data: Dict[str, Any]
+                           ) -> None:
     File.objects.create(user=user, storage=storage,
-                        destination=target_file_path, name=data.get('filename'),
+                        destination=file_path, name=data.get('filename'),
                         description=data.get('description'), type=data.get('extension'),
                         size=data.get('total_size'), hash=data.get('hash_sum'))
 
 
-def build_chunks_to_file(chunks_paths: List[str], target_file_name) -> None:
-    with open(target_file_name, 'ab') as target_file:
+def build_file(chunks_paths: List[str], filename) -> None:
+    with open(filename, 'ab') as target_file:
         for path in chunks_paths:
             with open(path, 'rb') as stored_chunk_file:
                 target_file.write(stored_chunk_file.read())
@@ -44,17 +48,17 @@ class BuildFileView(GenericAPIView):
         filename = serializer.validated_data.get('filename')
         identifier = serializer.validated_data.get('identifier')
 
-        temp_files_chunks_storage = os.path.join(self.file_storage.destination, str(user.id), identifier)
-        target_file_path = os.path.join(self.file_storage, filename)
+        temp_chunks_storage = os.path.join(self.file_storage.destination, str(user.id), identifier)
+        file_path = os.path.join(self.file_storage, filename)
         chunks_paths = [
-            os.path.join(temp_files_chunks_storage, get_chunk_name(filename, x))
+            os.path.join(temp_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
 
         upload_complete = all([os.path.exists(path) for path in chunks_paths])
 
         if upload_complete:
-            build_chunks_to_file(chunks_paths, target_file_path)
-            os.rmdir(temp_files_chunks_storage)
+            build_file(chunks_paths, file_path)
+            os.rmdir(temp_chunks_storage)
 
-        create_database_record(user, self.file_storage, target_file_path, serializer.validated_data)
+        create_database_record(user, self.file_storage, file_path, serializer.validated_data)
         return CreatedResponse({})

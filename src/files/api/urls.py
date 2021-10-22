@@ -9,5 +9,5 @@ urlpatterns = [
     path('upload/', UploadTemplateView.as_view(), name='upload-template'),
     path('upload/chunks/', UploadView.as_view(), name='upload-chunks'),
     path('build/', BuildFileView.as_view(), name='build'),
-    path('upload/non-chunk/', NonChunkUploadView.as_view(), name='non-chunk-upload')
+    path('upload/non-chunk/', NonChunkUploadView.as_view(), name='upload-non-chunk')
 ]

@@ -1,10 +1,10 @@
 import hashlib
 
 
-def calculate_hash_md5(input_file):
+def calculate_hash_md5(file_path):
     md5 = hashlib.md5()
 
-    with open(input_file, 'rb') as file:
+    with open(file_path, 'rb') as file:
         chunk = 0
         while chunk != b'':
             chunk = file.read(1024)
