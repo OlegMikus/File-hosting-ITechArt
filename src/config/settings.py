@@ -5,13 +5,14 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DATABASE_USER, \
     DATABASE_PASSWORD, \
     DATABASE_HOST, \
-    DATABASE_POST
+    DATABASE_POST, \
+    DJANGO_DEBUG_STATUS
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = DJANGO_SECRET_KEY
 
-DEBUG = False
+DEBUG = DJANGO_DEBUG_STATUS
 
 ALLOWED_HOSTS = ['0.0.0.0', ]
 
