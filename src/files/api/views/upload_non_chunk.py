@@ -9,7 +9,7 @@ from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.base.services.responses import CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
-from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
+from src.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE_SIZE
 from src.files.hash_count import calculate_hash_md5
 from src.files.models import File
 from src.files.models.files_storage import FilesStorage
@@ -32,6 +32,9 @@ class NonChunkUploadView(GenericAPIView):
         hash_from_request = request.data.get('hash')
         description = request.data.get('description')
         file_data = request.FILES.get('file')
+
+        if file_data.size > FILE_SIZE:
+            raise BadRequestError('To large file')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
         os.makedirs(user_storage_dir, exist_ok=True)
