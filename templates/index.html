@@ -12,8 +12,10 @@
     <hr/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <input type="text" id="description-text">
+
     <script src="/static/resumable.js"></script>
-    <script src="/static/hash_count.js"></script>
 
     <div class="resumable-drop">
         Drop your files here or <a class="resumable-browse"><u>select from your computer</u></a>
@@ -46,6 +48,12 @@
     <ul class="resumable-list"></ul>
 
     <script>
+        let description;
+        function getInnerText() {
+            description = document.getElementById("description-text").innerText
+            console.log(description)
+        }
+
         let hashChunk;
         const place = document.querySelector(".resumable-drop");
 
@@ -60,7 +68,6 @@
                 hashChunk = CryptoJS.MD5(binary).toString();
             };
 
-            reader.readAsBinaryString(file);
         };
 
         var r = new Resumable({
@@ -71,7 +78,7 @@
             throttleProgressCallbacks: 1,
             query: {
                 resumableHash: hashChunk,
-                resumableDescription: 'now its just to test'
+                resumableDescription: description
             }
         });
         // Resumable.js isn't supported, fall back on a different method
