@@ -10,7 +10,7 @@ from src.accounts.models import User
 from src.base.services.responses import CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
 from src.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE_SIZE
-from src.files.hash_count import calculate_hash_md5
+from src.files.utils import calculate_hash_md5
 from src.files.models import File
 from src.files.models.files_storage import FilesStorage
 
@@ -34,26 +34,26 @@ class NonChunkUploadView(GenericAPIView):
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE_SIZE:
-            raise BadRequestError('To large file')
+            raise BadRequestError('File is too large')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
         os.makedirs(user_storage_dir, exist_ok=True)
 
-        to_file_path = os.path.join(user_storage_dir, file_data.name)
+        file_path = os.path.join(user_storage_dir, file_data.name)
 
-        with open(to_file_path, 'wb+') as file:
+        with open(file_path, 'wb+') as file:
             for chunk in file_data.chunks():
                 file.write(chunk)
 
-        files_hash = calculate_hash_md5(to_file_path)
+        file_hash = calculate_hash_md5(file_path)
         filename, file_type = get_filename_and_type(file_data.name)
 
-        if hash_from_request != files_hash:
-            raise BadRequestError('Hash sum do not match')
+        if hash_from_request != file_hash:
+            raise BadRequestError('Hash sum does not match')
 
         File.objects.create(user=user, storage=storage,
-                            destination=to_file_path, name=filename,
+                            destination=file_path, name=filename,
                             description=description, type=file_type,
-                            size=file_data.size, hash=files_hash)
+                            size=file_data.size, hash=file_hash)
 
         return CreatedResponse({'response': 'created'})  # TODO: fix this after merge
