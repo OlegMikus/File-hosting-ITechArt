@@ -15,7 +15,7 @@ from src.files.models import FilesStorage
 
 
 def get_chunk_name(uploaded_filename: str, chunk_number: int) -> str:
-    return uploaded_filename + f'_part_{chunk_number}'
+    return f'{uploaded_filename}_part_{chunk_number}'
 
 
 class UploadView(GenericAPIView):
@@ -25,11 +25,9 @@ class UploadView(GenericAPIView):
 
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
-        if not serializer.is_valid():
-            raise BadRequestError('Wrong query parameters')
 
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
+
         if not serializer.is_valid():
             raise BadRequestError()
         identifier = serializer.validated_data.get('identifier')
@@ -42,8 +40,8 @@ class UploadView(GenericAPIView):
         path_to_store_chunk = os.path.join(temp_files_chunks_storage, chunk_name)
 
         if os.path.isfile(path_to_store_chunk):
-            return OkResponse()
-        return NotFoundResponse()
+            return OkResponse({})
+        return NotFoundResponse({})
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
@@ -66,4 +64,4 @@ class UploadView(GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return CreatedResponse()
+        return CreatedResponse({})
