@@ -7,7 +7,7 @@ from rest_framework.request import Request
 
 from src.accounts.authentication import login_required
 from src.accounts.models import User
-from src.base.services.responses import OkResponse
+from src.base.services.responses import CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
 from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.files.api.views.upload import get_chunk_name
@@ -57,4 +57,4 @@ class BuildFileView(GenericAPIView):
             os.rmdir(temp_files_chunks_storage)
 
         create_database_record(user, self.file_storage, target_file_path, serializer.validated_data)
-        return OkResponse()
+        return CreatedResponse({})
