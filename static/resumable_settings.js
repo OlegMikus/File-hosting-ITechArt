@@ -1,26 +1,32 @@
-let description;
-
-function getInnerText() {
-    description = document.getElementById("description-text").innerText
-    console.log(description)
-}
-
-let hashChunk;
-const place = document.querySelector(".resumable-drop");
-
-place.ondrop = function (event) {
-    event.preventDefault();
-
-    var file = event.dataTransfer.files[0];
-    var reader = new FileReader();
-
-    reader.onload = function (event) {
-        var binary = event.target.result;
-        hashChunk = CryptoJS.MD5(binary).toString();
-    };
-
-};
-
+// var description;
+//
+// function getInnerText() {
+//     description = document.getElementById("description-text").innerText
+//     console.log(description)
+// }
+//
+// let hashChunk;
+// const place = document.querySelector(".resumable-drop");
+//
+// place.ondrop = function (event) {
+//     event.preventDefault();
+//
+//     var file = event.dataTransfer.files[0];
+//     var reader = new FileReader();
+//
+//     reader.onload = function (event) {
+//         var binary = event.target.result;
+//         hashChunk = CryptoJS.MD5(binary).toString();
+//         console.log(hashChunk)
+//     };
+//
+// };
+//
+// place.ondrop = function (event) {
+//     description = document.getElementById("description-text").value
+//     console.log(description)
+// };
+// console.log(description)
 var r = new Resumable({
     target: '/api/files/upload/chunks/',
     chunkSize: 50 * 1024 * 1024,
@@ -28,8 +34,8 @@ var r = new Resumable({
     testChunks: true,
     throttleProgressCallbacks: 1,
     query: {
-        resumableHash: hashChunk,
-        resumableDescription: description
+        resumableHash: 'hashChunk',
+        resumableDescription: 'description'
     }
 });
 // Resumable.js isn't supported, fall back on a different method
