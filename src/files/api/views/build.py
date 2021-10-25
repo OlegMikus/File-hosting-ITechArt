@@ -15,7 +15,7 @@ from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
 from src.files.models import FilesStorage, File
 
 
-def create_database_record(user: User,
+def create_file(user: User,
                            storage: FilesStorage,
                            file_path: str,
                            data: Dict[str, Any]
@@ -60,5 +60,5 @@ class BuildFileView(GenericAPIView):
             build_file(chunks_paths, file_path)
             os.rmdir(temp_chunks_storage)
 
-        create_database_record(user, self.file_storage, file_path, serializer.validated_data)
+        create_file(user, self.file_storage, file_path, serializer.validated_data)
         return CreatedResponse({})
