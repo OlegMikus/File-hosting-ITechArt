@@ -6,7 +6,7 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'src.config.settings')
 
-celery_app = Celery('files')
+celery_app = Celery()
 
 celery_app.config_from_object('django.conf:settings', namespace='CELERY')
 

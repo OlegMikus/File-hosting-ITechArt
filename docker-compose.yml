@@ -55,7 +55,7 @@ services:
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
-    command: sh -c 'sleep 8; celery -A src.config worker -l INFO'
+    command: celery -A src.config worker -l INFO
     volumes:
       - .:/app
     depends_on:
