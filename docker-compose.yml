@@ -38,11 +38,10 @@ services:
       - trainee_network
 
   rabbit:
+    hostname: rabbit
     restart: always
     image: rabbitmq:3.9.8
     environment:
-      RABBITMQ_NODENAME: "rabbit@localhost"
-      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
       RABBITMQ_DEFAULT_USER: "rabbitmq"
       RABBITMQ_DEFAULT_PASS: "rabbitmq"
       RABBITMQ_DEFAULT_VHOST: "/"
@@ -53,21 +52,15 @@ services:
 
   celery:
     restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    command: sh -c 'sleep 8; celery -A src.config worker -l INFO'
     volumes:
       - .:/app
-    environment:
-      DJANGO_SETTINGS_MODULE: "{APP}.settings.docker"
-    ports:
-      - "5555:5555"
-    command: bash -c "
-      rm -rf /tmp/celery*.pid &
-      python -m celery multi start --app={APP} --pidfile=/tmp/%n.pid --logfile=/app/logs/celery/%n.log 4 -c 4 -Q:1 dispatch -Q:2 process_item -Q:3 network -c:4 1 -Q:4 celery -E &&
-      python -m celery -A {APP} beat --pidfile=/tmp/celerybeat.pid -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach
-    links:
-      - rabbit
     depends_on:
-      - rabbit
+        - db
+        - rabbit
     networks:
       - trainee_network
 
