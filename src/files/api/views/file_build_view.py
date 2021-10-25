@@ -1,5 +1,5 @@
 import os
-from typing import Any, List, Dict
+from typing import Any, List
 
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
@@ -12,18 +12,8 @@ from src.base.services.std_error_handler import BadRequestError
 from src.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.files.api.views.upload import get_chunk_name
 from src.files.constants import FILE_STORAGE__TYPE__PERMANENT
-from src.files.models import FilesStorage, File
-
-
-def create_file(user: User,
-                           storage: FilesStorage,
-                           file_path: str,
-                           data: Dict[str, Any]
-                           ) -> None:
-    File.objects.create(user=user, storage=storage,
-                        destination=file_path, name=data.get('filename'),
-                        description=data.get('description'), type=data.get('extension'),
-                        size=data.get('total_size'), hash=data.get('hash_sum'))
+from src.files.models import FilesStorage
+from src.files.utils import create_file
 
 
 def build_file(chunks_paths: List[str], filename) -> None:
