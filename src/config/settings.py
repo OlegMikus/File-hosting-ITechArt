@@ -104,5 +104,3 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.base.services.std_error_handler.std_error_handler'
 }
-
-CELERY_BROKER_URL = 'amqp://rabbitmq:rabbitmq@rabbit:5672/'
