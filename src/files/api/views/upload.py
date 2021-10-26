@@ -25,11 +25,10 @@ class UploadView(GenericAPIView):
 
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
 
         if not serializer.is_valid():
-            raise BadRequestError()
+            raise BadRequestError({})
         identifier = serializer.validated_data.get('identifier')
         filename = serializer.validated_data.get('filename')
         chunk_number = serializer.validated_data.get('chunk_number')

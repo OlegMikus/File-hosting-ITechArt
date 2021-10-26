@@ -10,4 +10,4 @@ class ChunkUploadQueryParamsSerializer(serializers.Serializer):
     resumableType = serializers.CharField(source='extension', max_length=256)
     resumableTotalSize = serializers.CharField(source='total_size', max_length=256)
     resumableHash = serializers.CharField(source='hash_sum', max_length=32)
-    resumableDescription = serializers.CharField()
+    resumableDescription = serializers.CharField(source='description')
