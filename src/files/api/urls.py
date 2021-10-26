@@ -1,6 +1,6 @@
 from django.urls import path
 
-from src.files.api.views.build import BuildFileView
+from src.files.api.views.file_build_view import BuildFileView
 from src.files.api.views.upload import UploadView
 from src.files.api.views.upload_template import UploadTemplateView
 from src.files.api.views.upload_non_chunk import NonChunkUploadView

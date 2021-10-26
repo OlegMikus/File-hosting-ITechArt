@@ -9,9 +9,8 @@ from src.accounts.authentication import login_required
 from src.accounts.models import User
 from src.base.services.responses import CreatedResponse
 from src.base.services.std_error_handler import BadRequestError
-from src.files.api.views.build import create_database_record
 from src.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE__NON_CHUNK__MAX_SIZE
-from src.files.utils import calculate_hash_md5
+from src.files.utils import calculate_hash_md5, create_file
 from src.files.models.files_storage import FilesStorage
 
 
@@ -44,5 +43,5 @@ class NonChunkUploadView(GenericAPIView):
         if expected_hash != actual_hash:
             raise BadRequestError('Hash sum does not match')
 
-        create_database_record(user, storage, file_path, request.data)
+        create_file(user, storage, file_path, request.data)
         return CreatedResponse({})

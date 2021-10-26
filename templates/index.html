@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>Resumable.js DRF</title>
@@ -13,12 +14,14 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
+    <label for="description-text">Description</label>
+
     <input type="text" id="description-text">
 
-    <script src="/static/resumable.js"></script>
+    <script src="{% static 'resumable.js' %}"></script>
 
     <div class="resumable-drop">
-        Drop your files here or <a class="resumable-browse"><u>select from your computer</u></a>
+        Drop your files here
     </div>
 
     <div class="resumable-progress">
@@ -46,7 +49,7 @@
     </div>
 
     <ul class="resumable-list"></ul>
-    <script src="/static/resumable_settings.js"></script>
+    <script src="{% static 'resumable_settings.js' %}"></script>
 
 </div>
 </body>
