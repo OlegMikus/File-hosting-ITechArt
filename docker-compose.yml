@@ -1,10 +1,8 @@
 version: '3.9'
 
-
 networks:
   trainee_network:
     driver: bridge
-
 
 services:
   app_auth:
@@ -36,6 +34,33 @@ services:
       - 1337:80
     depends_on:
       - app_auth
+    networks:
+      - trainee_network
+
+  rabbit:
+    hostname: rabbit
+    restart: always
+    image: rabbitmq:3.9.8
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "5672:5672"
+    networks:
+      - trainee_network
+
+  celery:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    command: celery -A src.etl worker -l INFO
+    volumes:
+      - .:/app
+    depends_on:
+        - db
+        - rabbit
     networks:
       - trainee_network
 
