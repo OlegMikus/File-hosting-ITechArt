@@ -10,16 +10,16 @@ from src.apps.accounts.models import User
 from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
-from src.apps.files.views.upload import get_chunk_name
-from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
+from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE_STORAGE__TYPE__TEMP
 from src.apps.files.models import FilesStorage
-from src.apps.files.utils import create_file
-from src.apps.files.tasks import build_file
+from src.apps.files.utils import is_upload_complete, get_chunk_name
+from src.apps.files.tasks import task_build_file
 
 
 class BuildFileView(GenericAPIView):
 
-    file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
+    perm_file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
+    temp_file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
@@ -31,17 +31,19 @@ class BuildFileView(GenericAPIView):
         filename = serializer.validated_data.get('filename')
         identifier = serializer.validated_data.get('identifier')
 
-        temp_chunks_storage = os.path.join(self.file_storage.destination, str(user.id), identifier)
-        file_path = os.path.join(self.file_storage, filename)
+        temp_chunks_storage = os.path.join(self.temp_file_storage.destination, str(user.id), identifier)
+        user_storage_dir = os.path.join(self.perm_file_storage.destination, str(user.id))
+        os.makedirs(user_storage_dir, 0o777, exist_ok=True)
+
+        file_path = os.path.join(user_storage_dir, filename)
         chunks_paths = [
             os.path.join(temp_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
 
-        upload_complete = all([os.path.exists(path) for path in chunks_paths])
+        if not is_upload_complete(chunks_paths):
+            raise BadRequestError('Upload not finished')
+        print(type(serializer.validated_data))
+        task_build_file.delay(user.id, self.perm_file_storage.id, serializer.validated_data,
+                              chunks_paths, file_path, temp_chunks_storage)
 
-        if upload_complete:
-            build_file.delay(chunks_paths, file_path)
-            os.rmdir(temp_chunks_storage)
-
-        create_file(user, self.file_storage, file_path, serializer.validated_data)
         return CreatedResponse({})
