@@ -4,7 +4,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.apps.accounts.serializers import UserSignUpSerializer
+from src.apps.accounts.serializers.signup_serializer import UserSignUpSerializer
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.base.services.responses import CreatedResponse
 
