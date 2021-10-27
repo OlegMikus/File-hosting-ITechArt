@@ -8,7 +8,7 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DATABASE_POST, \
     DJANGO_DEBUG_STATUS
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = DJANGO_SECRET_KEY
 
@@ -26,9 +26,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
 
-    'src.accounts',
-    'src.base',
-    'src.files'
+    'src.apps.accounts',
+    'src.apps.base',
+    'src.apps.files'
 ]
 
 MIDDLEWARE = [
@@ -103,5 +103,5 @@ STATIC_ROOT = BASE_DIR / 'static'
 AUTH_USER_MODEL = 'accounts.User'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'src.base.services.std_error_handler.std_error_handler'
+    'EXCEPTION_HANDLER': 'src.apps.base.services.std_error_handler.std_error_handler'
 }
