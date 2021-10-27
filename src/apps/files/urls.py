@@ -1,9 +1,9 @@
 from django.urls import path
 
-from src.apps.files.api.views.file_build_view import BuildFileView
-from src.apps.files.api.views.upload import UploadView
-from src.apps.files.api.views.upload_template import UploadTemplateView
-from src.apps.files.api.views.upload_non_chunk import NonChunkUploadView
+from src.apps.files.views.file_build_view import BuildFileView
+from src.apps.files.views.upload import UploadView
+from src.apps.files.views.upload_template import UploadTemplateView
+from src.apps.files.views.upload_non_chunk import NonChunkUploadView
 
 urlpatterns = [
     path('upload/', UploadTemplateView.as_view(), name='upload-template'),

@@ -5,7 +5,7 @@ import jwt
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 
-from src.apps.accounts.api.serializers.login_serializer import UserLoginSerializer
+from src.apps.accounts.serializers.login_serializer import UserLoginSerializer
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.base.services.responses import OkResponse
 from src.config.env_consts import DJANGO_SECRET_KEY

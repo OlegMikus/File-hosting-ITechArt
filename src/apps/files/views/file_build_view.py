@@ -9,8 +9,8 @@ from src.apps.accounts.authentication import login_required
 from src.apps.accounts.models import User
 from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
-from src.apps.files.api.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
-from src.apps.files.api.views.upload import get_chunk_name
+from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
+from src.apps.files.views.upload import get_chunk_name
 from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
 from src.apps.files.models import FilesStorage
 from src.apps.files.utils import create_file

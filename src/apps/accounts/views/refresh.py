@@ -4,7 +4,7 @@ import jwt
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 
-from src.apps.accounts.api.views.login import create_tokens
+from src.apps.accounts.views.login import create_tokens
 from src.apps.accounts.models import User
 from src.apps.base.services.std_error_handler import ForbiddenError, BadRequestError
 from src.apps.base.services.responses import OkResponse
