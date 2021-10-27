@@ -1,5 +1,5 @@
 import os
-from typing import Any, List
+from typing import Any
 
 from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
@@ -14,14 +14,7 @@ from src.apps.files.views.upload import get_chunk_name
 from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
 from src.apps.files.models import FilesStorage
 from src.apps.files.utils import create_file
-
-
-def build_file(chunks_paths: List[str], filename) -> None:
-    with open(filename, 'ab') as target_file:
-        for path in chunks_paths:
-            with open(path, 'rb') as stored_chunk_file:
-                target_file.write(stored_chunk_file.read())
-            os.unlink(path)
+from src.apps.files.tasks import build_file
 
 
 class BuildFileView(GenericAPIView):
@@ -47,7 +40,7 @@ class BuildFileView(GenericAPIView):
         upload_complete = all([os.path.exists(path) for path in chunks_paths])
 
         if upload_complete:
-            build_file(chunks_paths, file_path)
+            build_file.delay(chunks_paths, file_path)
             os.rmdir(temp_chunks_storage)
 
         create_file(user, self.file_storage, file_path, serializer.validated_data)
