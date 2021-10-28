@@ -1,7 +1,11 @@
 import os
-from typing import List, Any, OrderedDict, Dict
+import shutil
+import time
+from datetime import timedelta, datetime
+from typing import List, Any, Dict
 
 from src.apps.accounts.models import User
+from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP
 from src.apps.files.models import FilesStorage
 from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.apps.files.utils import create_file
@@ -27,3 +31,18 @@ def task_build_file(user_id: str,
     file_storage = FilesStorage.objects.get(id=file_storage_id)
 
     create_file(user, file_storage, file_path, data)
+
+
+@celery_app.task
+def rm_expired_chunks() -> None:
+    storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
+    storage = storage.destination
+    users_dirs = os.walk(storage)
+
+    for directory in users_dirs:
+        if len(list(directory[0].split('/'))) > 3:
+            now = datetime.now()
+            file_updated = datetime.strptime(time.ctime(os.path.getmtime(directory[0])), "%c")
+            delta = timedelta(days=7)
+            if now - file_updated > delta:
+                shutil.rmtree(directory[0])
