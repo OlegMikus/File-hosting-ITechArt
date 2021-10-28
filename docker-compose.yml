@@ -64,6 +64,19 @@ services:
     networks:
       - trainee_network
 
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    command: celery -A src.etl beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbit
+    networks:
+      - trainee_network
+
   db:
     image: postgres:12.8
     volumes:
