@@ -42,7 +42,6 @@ class BuildFileView(GenericAPIView):
 
         if not is_upload_complete(chunks_paths):
             raise BadRequestError('Upload not finished')
-        print(type(serializer.validated_data))
         task_build_file.delay(user.id, self.perm_file_storage.id, serializer.validated_data,
                               chunks_paths, file_path, temp_chunks_storage)
 
