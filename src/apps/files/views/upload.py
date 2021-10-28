@@ -12,10 +12,7 @@ from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP
 from src.apps.files.models import FilesStorage
-
-
-def get_chunk_name(filename: str, chunk_number: int) -> str:
-    return f'{filename}_part_{chunk_number}'
+from src.apps.files.utils import get_chunk_name
 
 
 class UploadView(GenericAPIView):
@@ -54,7 +51,7 @@ class UploadView(GenericAPIView):
 
         chunk_data = request.FILES.get('file')
         temp_chunks_storage = os.path.join(self.file_storage_path, str(user.id), identifier)
-        os.makedirs(temp_chunks_storage, exist_ok=True)
+        os.makedirs(temp_chunks_storage, 0o777, exist_ok=True)
 
         chunk_name = get_chunk_name(filename, chunk_number)
         chunk_path = os.path.join(temp_chunks_storage, chunk_name)

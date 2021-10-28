@@ -30,7 +30,7 @@ class NonChunkUploadView(GenericAPIView):
             raise BadRequestError('File is too large')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
-        os.makedirs(user_storage_dir, exist_ok=True)
+        os.makedirs(user_storage_dir, 0o777, exist_ok=True)
 
         file_path = os.path.join(user_storage_dir, file_data.name)
 
