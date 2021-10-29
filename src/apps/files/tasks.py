@@ -20,12 +20,13 @@ def task_build_file(user_id: str,
                     chunks_paths: List[str],
                     file_path: str,
                     temp_chunks_storage: str) -> None:
+    now = datetime.now()
     with open(file_path, 'ab') as target_file:
         for path in chunks_paths:
             with open(path, 'rb') as stored_chunk_file:
                 target_file.write(stored_chunk_file.read())
             os.unlink(path)
-
+    print(datetime.now() - now)
     os.rmdir(temp_chunks_storage)
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
@@ -34,15 +35,15 @@ def task_build_file(user_id: str,
 
 
 @celery_app.task
-def rm_expired_chunks() -> None:
+def remove_expired_chunks() -> None:
     storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
-    storage = storage.destination
-    users_dirs = os.walk(storage)
+    storage_destination = storage.destination
+    users_dirs = os.walk(storage_destination)
 
     for directory in users_dirs:
         if len(list(directory[0].split('/'))) > 3:
             now = datetime.now()
-            file_updated = datetime.strptime(time.ctime(os.path.getmtime(directory[0])), "%c")
-            delta = timedelta(days=7)
-            if now - file_updated > delta:
+            file_updated_time = datetime.strptime(time.ctime(os.path.getmtime(directory[0])), "%c")
+            time_delta = timedelta(days=7)
+            if now - file_updated_time > time_delta:
                 shutil.rmtree(directory[0])
