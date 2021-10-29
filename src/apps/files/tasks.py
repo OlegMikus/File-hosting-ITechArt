@@ -35,8 +35,12 @@ def task_build_file(user_id: str,
 @celery_app.task
 def remove_expired_chunks() -> None:
     storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
-    storage_destination = storage.destination
-    users_dirs = os.walk(storage_destination)
+    users_dirs = os.listdir(storage.destination)
+    print(users_dirs)
+    for user_dir in users_dirs:
+        absolute_user_dir_path = os.path.join(storage.destination, user_dir)
+        print(os.listdir(absolute_user_dir_path))
+
 
     for directory in users_dirs:
         if len(list(directory[0].split('/'))) > 3:
