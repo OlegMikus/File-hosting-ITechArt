@@ -20,13 +20,11 @@ def task_build_file(user_id: str,
                     chunks_paths: List[str],
                     file_path: str,
                     temp_chunks_storage: str) -> None:
-    now = datetime.now()
     with open(file_path, 'ab') as target_file:
         for path in chunks_paths:
             with open(path, 'rb') as stored_chunk_file:
                 target_file.write(stored_chunk_file.read())
             os.unlink(path)
-    print(datetime.now() - now)
     os.rmdir(temp_chunks_storage)
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
