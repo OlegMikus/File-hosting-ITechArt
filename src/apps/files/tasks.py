@@ -7,7 +7,6 @@ from typing import List, Any, Dict
 from src.apps.accounts.models import User
 from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP
 from src.apps.files.models import FilesStorage
-from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.apps.files.utils import create_file
 
 from src.etl.celery import celery_app
