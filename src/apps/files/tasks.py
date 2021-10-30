@@ -36,16 +36,13 @@ def task_build_file(user_id: str,
 def remove_expired_chunks() -> None:
     storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
     users_dirs = os.listdir(storage.destination)
-    print(users_dirs)
+
     for user_dir in users_dirs:
         absolute_user_dir_path = os.path.join(storage.destination, user_dir)
-        print(os.listdir(absolute_user_dir_path))
-
-
-    for directory in users_dirs:
-        if len(list(directory[0].split('/'))) > 3:
+        for dir_with_chunks in os.listdir(absolute_user_dir_path):
+            absolute_dir_with_chunks_path = os.path.join(absolute_user_dir_path, dir_with_chunks)
             now = datetime.now()
-            file_updated_time = datetime.strptime(time.ctime(os.path.getmtime(directory[0])), "%c")
+            file_updated_time = datetime.strptime(time.ctime(os.path.getmtime(absolute_dir_with_chunks_path)), "%c")
             time_delta = timedelta(days=7)
             if now - file_updated_time > time_delta:
-                shutil.rmtree(directory[0])
+                shutil.rmtree(absolute_dir_with_chunks_path)
