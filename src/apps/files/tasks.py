@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 from typing import List, Any, Dict
 
 from src.apps.accounts.models import User
-from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP
+from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS
 from src.apps.files.models import FilesStorage
 from src.apps.files.utils import create_file
 
@@ -40,8 +40,7 @@ def remove_expired_chunks() -> None:
         absolute_user_dir_path = os.path.join(storage.destination, user_dir)
         for dir_with_chunks in os.listdir(absolute_user_dir_path):
             absolute_dir_with_chunks_path = os.path.join(absolute_user_dir_path, dir_with_chunks)
-            now = datetime.now()
             file_updated_time = datetime.strptime(time.ctime(os.path.getmtime(absolute_dir_with_chunks_path)), "%c")
-            time_delta = timedelta(days=7)
-            if now - file_updated_time > time_delta:
+
+            if datetime.now() - file_updated_time > timedelta(days=CHUNKS__STORAGE_TIME__DAYS):
                 shutil.rmtree(absolute_dir_with_chunks_path)
