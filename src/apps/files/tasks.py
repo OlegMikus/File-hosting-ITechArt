@@ -7,7 +7,7 @@ from typing import List, Any, Dict
 from src.apps.accounts.models import User
 from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS
 from src.apps.files.models import FilesStorage
-from src.apps.files.utils import create_file
+from src.apps.files.utils import create_file, is_valid_format
 
 from src.etl.celery import celery_app
 
@@ -27,7 +27,8 @@ def task_build_file(user_id: str,
     os.rmdir(temp_chunks_storage)
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
-
+    if not is_valid_format(file_path):
+        pass  # TODO: send_mail() function here, will be created in another branch
     create_file(user, file_storage, file_path, data)
 
 
