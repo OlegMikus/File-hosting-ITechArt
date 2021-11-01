@@ -13,12 +13,12 @@ def get_chunk_name(filename: str, chunk_number: int) -> str:
     return f'{filename}_part_{chunk_number}'
 
 
-def calculate_hash_md5(file_path) -> str:
+def calculate_hash_md5(file) -> str:
     md5 = hashlib.md5()
 
     chunk = 0
     while chunk != b'':
-        chunk = file_path.read(1024)
+        chunk = file.read(1024)
         md5.update(chunk)
     return md5.hexdigest()
 
