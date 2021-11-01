@@ -1,8 +1,9 @@
 import hashlib
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any, List, BinaryIO
 
 import magic
+from django.core.files.uploadedfile import UploadedFile
 
 from src.apps.accounts.models import User
 from src.apps.files.constants import ALLOWED_FORMATS
@@ -13,14 +14,16 @@ def get_chunk_name(filename: str, chunk_number: int) -> str:
     return f'{filename}_part_{chunk_number}'
 
 
-def calculate_hash_md5(file) -> str:
+def is_valid_hash_md5(hash_sum: str, file: BinaryIO) -> bool:
     md5 = hashlib.md5()
-
     chunk = 0
     while chunk != b'':
         chunk = file.read(1024)
         md5.update(chunk)
-    return md5.hexdigest()
+
+    return hash_sum == md5.hexdigest()
+
+
 
 
 def create_file(user: User,
