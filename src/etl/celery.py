@@ -12,7 +12,7 @@ celery_app.config_from_object('src.config.celery_consts', namespace='CELERY')
 celery_app.autodiscover_tasks()
 
 celery_app.conf.beat_schedule = {
-    'remove_chunks_after_week_of_keeping': {
+    'remove_expired_chunks': {
         'task': 'src.apps.files.tasks.remove_expired_chunks',
         'schedule': crontab(day_of_week='*', hour=4, minute=0),
     }
