@@ -10,7 +10,7 @@ from src.apps.accounts.models import User
 from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE__NON_CHUNK__MAX_SIZE, ALLOWED_FORMATS
-from src.apps.files.utils import calculate_hash_md5, create_file, is_valid_format
+from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
 from src.apps.files.models.files_storage import FilesStorage
 
 
@@ -29,7 +29,7 @@ class NonChunkUploadView(GenericAPIView):
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
             raise BadRequestError('File is too large')
 
-        if expected_hash != calculate_hash_md5(file_data):
+        if not is_valid_hash_md5(expected_hash, file_data):
             raise BadRequestError('Hash sum does not match')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
