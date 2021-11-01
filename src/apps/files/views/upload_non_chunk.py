@@ -29,9 +29,7 @@ class NonChunkUploadView(GenericAPIView):
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
             raise BadRequestError('File is too large')
 
-        actual_hash = calculate_hash_md5(file_data)
-
-        if expected_hash != actual_hash:
+        if expected_hash != calculate_hash_md5(file_data):
             raise BadRequestError('Hash sum does not match')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
