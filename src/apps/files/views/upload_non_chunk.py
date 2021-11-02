@@ -23,14 +23,11 @@ class NonChunkUploadView(GenericAPIView):
             raise BadRequestError('File is missing')
 
         storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
-        expected_hash = request.data.get('hash_sum')
+        hash_sum = request.data.get('hash_sum')
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
             raise BadRequestError('File is too large')
-
-        if not is_valid_hash_md5(expected_hash, file_data):
-            raise BadRequestError('Hash sum does not match')
 
         user_storage_dir = os.path.join(storage.destination, str(user.id))
         os.makedirs(user_storage_dir, 0o777, exist_ok=True)
@@ -41,9 +38,9 @@ class NonChunkUploadView(GenericAPIView):
             for chunk in file_data.chunks():
                 file.write(chunk)
 
-        if not is_valid_format(file_path):
+        if not is_valid_format(file_path) or not is_valid_hash_md5(hash_sum, file_path):
             os.remove(file_path)
-            raise BadRequestError(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
+            raise BadRequestError(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}. Or invalid hash')
 
         create_file(user, storage, file_path, request.data)
         return CreatedResponse({})

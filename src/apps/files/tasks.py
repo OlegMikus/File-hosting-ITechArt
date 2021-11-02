@@ -28,7 +28,7 @@ def task_build_file(user_id: str,
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
     hash_sum = data.get('hash_sum')
-    if not is_valid_format(file_path) or not is_valid_hash_md5(hash_sum, open(file_path, 'rb')):
+    if not is_valid_format(file_path) or not is_valid_hash_md5(hash_sum, file_path):
         os.remove(file_path)
         pass  # TODO: send_mail() function here, will be created in another branch
 
