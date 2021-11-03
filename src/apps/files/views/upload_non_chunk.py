@@ -42,5 +42,5 @@ class NonChunkUploadView(GenericAPIView):
             os.remove(file_path)
             raise BadRequestError(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}. Or invalid hash')
 
-        create_file(user, storage, file_path, request.data)
+        create_file(user, storage, user_storage_dir, request.data)
         return CreatedResponse({})
