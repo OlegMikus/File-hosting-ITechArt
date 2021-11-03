@@ -1,6 +1,6 @@
 import hashlib
 import os
-from typing import Dict, Any, List, BinaryIO, Union
+from typing import Dict, Any, List
 
 import magic
 
