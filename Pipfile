@@ -12,6 +12,7 @@ gunicorn = "==20.1.0"
 pyjwt = "==2.1.0"
 datetime = "==4.3"
 celery = "==5.1.2"
+python-magic = "==0.4.24"
 
 [dev-packages]
 pytest = "==6.2.5"

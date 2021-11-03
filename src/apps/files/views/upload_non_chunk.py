@@ -9,8 +9,8 @@ from src.apps.accounts.authentication import login_required
 from src.apps.accounts.models import User
 from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
-from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE__NON_CHUNK__MAX_SIZE
-from src.apps.files.utils import calculate_hash_md5, create_file
+from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE__NON_CHUNK__MAX_SIZE, ALLOWED_FORMATS
+from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
 from src.apps.files.models.files_storage import FilesStorage
 
 
@@ -23,7 +23,8 @@ class NonChunkUploadView(GenericAPIView):
             raise BadRequestError('File is missing')
 
         storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
-        expected_hash = request.data.get('hash_sum')
+        hash_sum = request.data.get('hash_sum')
+        filename = request.data.get('filename')
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
@@ -38,10 +39,14 @@ class NonChunkUploadView(GenericAPIView):
             for chunk in file_data.chunks():
                 file.write(chunk)
 
-        actual_hash = calculate_hash_md5(file_path)
+        errors = []
+        if not is_valid_format(file_path):
+            errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
+        if not is_valid_hash_md5(hash_sum, file_path):
+            errors.append('Invalid hash')
+        if errors:
+            os.remove(file_path)
+            raise BadRequestError(errors)
 
-        if expected_hash != actual_hash:
-            raise BadRequestError('Hash sum does not match')
-
-        create_file(user, storage, file_path, request.data)
+        create_file(user, storage, os.path.join(str(user.id, filename)), request.data)
         return CreatedResponse({})

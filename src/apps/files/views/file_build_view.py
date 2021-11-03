@@ -35,7 +35,6 @@ class BuildFileView(GenericAPIView):
         user_storage_dir = os.path.join(self.perm_file_storage.destination, str(user.id))
         os.makedirs(user_storage_dir, 0o777, exist_ok=True)
 
-        file_path = os.path.join(user_storage_dir, filename)
         chunks_paths = [
             os.path.join(temp_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
@@ -43,6 +42,6 @@ class BuildFileView(GenericAPIView):
         if not is_upload_complete(chunks_paths):
             raise BadRequestError('Upload not finished')
         task_build_file.delay(user.id, self.perm_file_storage.id, serializer.validated_data,
-                              chunks_paths, file_path, temp_chunks_storage)
+                              chunks_paths, os.path.join(str(user.id, filename)), temp_chunks_storage)
 
         return CreatedResponse({})

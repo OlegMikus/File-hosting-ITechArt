@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 
 from src.apps.accounts.models import User
@@ -18,3 +20,7 @@ class File(BaseModel):
 
     class Meta:
         db_table = 'file'
+
+    @property
+    def absolute_path(self) -> str:
+        return self.storage.destination / self.destination
