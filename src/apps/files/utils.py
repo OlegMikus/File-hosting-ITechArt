@@ -1,6 +1,6 @@
 import hashlib
 import os
-from typing import Dict, Any, List, BinaryIO, Optional
+from typing import Dict, Any, List, BinaryIO, Union
 
 import magic
 
@@ -13,7 +13,7 @@ def get_chunk_name(filename: str, chunk_number: int) -> str:
     return f'{filename}_part_{chunk_number}'
 
 
-def extract_file_path(file: Optional[str, File]) -> str:
+def extract_file_path(file: Union[str, File]) -> str:
     file_path = None
     if type(file) == str:
         file_path = file
@@ -22,7 +22,7 @@ def extract_file_path(file: Optional[str, File]) -> str:
     return file_path
 
 
-def is_valid_hash_md5(hash_sum: str, file: Optional[str, BinaryIO, File]) -> bool:
+def is_valid_hash_md5(hash_sum: str, file: Union[str, BinaryIO, File]) -> bool:
     md5 = hashlib.md5()
     if type(file) == str or type(file) == File:
         file_path = extract_file_path(file)
@@ -59,7 +59,7 @@ def is_upload_complete(chunks_paths: List[str]) -> bool:
     return all([os.path.exists(path) for path in chunks_paths])
 
 
-def is_valid_format(file: Optional[str, BinaryIO, File]) -> bool:
+def is_valid_format(file: Union[str, BinaryIO, File]) -> bool:
 
     if type(file) == str or type(file) == File:
         file_path = extract_file_path(file)
