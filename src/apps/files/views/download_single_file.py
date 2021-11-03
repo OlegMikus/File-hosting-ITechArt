@@ -29,5 +29,6 @@ class FileDownloadView(GenericAPIView):
         if not file.user.id == user.id:
             raise BadRequestError('You do not have this file')
 
-        return Response(headers={'Content-Disposition': f'attachment; filename:"{file.name}"',
+        return Response(content_type='application/force-download',
+                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.zip"',
                                  'X-Accel-Redirect': file_path})
