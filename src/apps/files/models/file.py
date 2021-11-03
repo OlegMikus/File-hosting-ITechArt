@@ -22,5 +22,5 @@ class File(BaseModel):
         db_table = 'file'
 
     @property
-    def absolute_path(self):
+    def absolute_path(self) -> str:
         return self.storage.destination / self.destination
