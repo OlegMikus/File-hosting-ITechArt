@@ -23,7 +23,7 @@ class FileDownloadView(GenericAPIView):
 
         file_id = serializer.validated_data.get('id')
         queryset = File.objects.get(id=file_id)
-        file_path = queryset.destination
+        file_path = queryset.abs
         if not os.path.exists(file_path):
             raise NotFoundError('file does not exist')
         if not queryset.user.id == user.id:
