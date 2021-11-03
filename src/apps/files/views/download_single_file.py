@@ -22,11 +22,12 @@ class FileDownloadView(GenericAPIView):
             raise ValidationError(serializer.errors)
 
         file_id = serializer.validated_data.get('id')
-        queryset = File.objects.get(id=file_id)
-        file_path = queryset.abs
+        file = File.objects.get(id=file_id)
+        file_path = file.absolute_path()
         if not os.path.exists(file_path):
             raise NotFoundError('file does not exist')
-        if not queryset.user.id == user.id:
+        if not file.user.id == user.id:
             raise BadRequestError('You do not have this file')
 
-        return Response(headers={'Content-Disposition': f'attachment; filename:"{file_path}"'})
+        return Response(headers={'Content-Disposition': f'attachment; filename:"{file.name}"',
+                                 'X-Accel-Redirect': file_path})
