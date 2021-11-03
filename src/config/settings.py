@@ -10,6 +10,20 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
 SECRET_KEY = DJANGO_SECRET_KEY
 
 DEBUG = DJANGO_DEBUG_STATUS
