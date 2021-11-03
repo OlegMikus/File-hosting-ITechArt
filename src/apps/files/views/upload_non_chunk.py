@@ -24,6 +24,7 @@ class NonChunkUploadView(GenericAPIView):
 
         storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
         hash_sum = request.data.get('hash_sum')
+        filename = request.data.get('filename')
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
@@ -44,5 +45,5 @@ class NonChunkUploadView(GenericAPIView):
         if not is_valid_hash_md5(hash_sum, file_path):
             os.remove(file_path)
             raise BadRequestError(f'Invalid hash')
-        create_file(user, storage, user_storage_dir, request.data)
+        create_file(user, storage, os.path.join(str(user.id, filename)), request.data)
         return CreatedResponse({})
