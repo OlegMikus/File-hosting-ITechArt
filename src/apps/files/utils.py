@@ -15,15 +15,15 @@ def get_chunk_name(filename: str, chunk_number: int) -> str:
 
 def is_valid_hash_md5(hash_sum: str, file_path: str) -> bool:
     md5 = hashlib.md5()
-    if file_path:
-        with open(file_path, 'rb') as file:
-            chunk = 0
-            while chunk != b'':
-                chunk = file.read(1024)
-                md5.update(chunk)
-            return hash_sum == md5.hexdigest()
-    else:
+    if not file_path:
         return False
+
+    with open(file_path, 'rb') as file:
+        chunk = 0
+        while chunk != b'':
+            chunk = file.read(1024)
+            md5.update(chunk)
+        return hash_sum == md5.hexdigest()
 
 
 def create_file(user: User,
@@ -42,10 +42,10 @@ def is_upload_complete(chunks_paths: List[str]) -> bool:
 
 
 def is_valid_format(file_path: str) -> bool:
-    if file_path:
-        with open(file_path, 'r') as users_file:
-            file = users_file.read(1024)
-            file_type = magic.from_buffer(file, mime=True)
-            return file_type in ALLOWED_FORMATS
-    else:
+    if not file_path:
         return False
+
+    with open(file_path, 'r') as users_file:
+        file = users_file.read(1024)
+        file_type = magic.from_buffer(file, mime=True)
+        return file_type in ALLOWED_FORMATS

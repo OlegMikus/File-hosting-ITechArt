@@ -32,7 +32,11 @@ def task_build_file(user_id: str,
             os.unlink(path)
     os.rmdir(temp_chunks_storage)
 
-    if not is_valid_format(file_path) or not is_valid_hash_md5(hash_sum, file_path):
+    if not is_valid_format(file_path):
+        os.remove(file_path)
+        return None  # TODO: send_mail() function here, will be created in another branch
+
+    if not is_valid_hash_md5(hash_sum, file_path):
         os.remove(file_path)
         return None  # TODO: send_mail() function here, will be created in another branch
 
