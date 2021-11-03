@@ -39,11 +39,14 @@ class NonChunkUploadView(GenericAPIView):
             for chunk in file_data.chunks():
                 file.write(chunk)
 
+        errors = []
         if not is_valid_format(file_path):
-            os.remove(file_path)
-            raise BadRequestError(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
+            errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
         if not is_valid_hash_md5(hash_sum, file_path):
+            errors.append('Invalid hash')
+        if errors:
             os.remove(file_path)
-            raise BadRequestError(f'Invalid hash')
+            raise BadRequestError(errors)
+
         create_file(user, storage, os.path.join(str(user.id, filename)), request.data)
         return CreatedResponse({})

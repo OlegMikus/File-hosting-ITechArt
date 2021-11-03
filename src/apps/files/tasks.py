@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 from typing import List, Any, Dict
 
 from src.apps.accounts.models import User
-from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS
+from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS, ALLOWED_FORMATS
 from src.apps.files.models import FilesStorage
 from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
 
@@ -32,14 +32,15 @@ def task_build_file(user_id: str,
             os.unlink(path)
     os.rmdir(temp_chunks_storage)
 
+    errors = []
     if not is_valid_format(file_path):
-        os.remove(file_path)
-        return None  # TODO: send_mail() function here, will be created in another branch
-
+        errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
     if not is_valid_hash_md5(hash_sum, file_path):
+        errors.append('Invalid hash')
+    if errors:
         os.remove(file_path)
-        return None  # TODO: send_mail() function here, will be created in another branch
-
+        # TODO: send_mail() with errors, function here, will be created in another branch
+        return None
     create_file(user, file_storage, user_storage_dir, data)
 
 
