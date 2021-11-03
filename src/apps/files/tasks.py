@@ -30,7 +30,7 @@ def task_build_file(user_id: str,
     hash_sum = data.get('hash_sum')
     if not is_valid_format(file_path) or not is_valid_hash_md5(hash_sum, file_path):
         os.remove(file_path)
-        return  # TODO: send_mail() function here, will be created in another branch
+        return False  # TODO: send_mail() function here, will be created in another branch
 
     create_file(user, file_storage, file_path, data)
 
