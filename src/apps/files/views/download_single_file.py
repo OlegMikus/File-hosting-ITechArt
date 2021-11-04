@@ -1,7 +1,7 @@
 import os
+import uuid
 from typing import Any
 
-from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -10,19 +10,13 @@ from src.apps.accounts.authentication import login_required
 from src.apps.accounts.models import User
 from src.apps.base.services.std_error_handler import NotFoundError
 from src.apps.files.models import File
-from src.apps.files.serializers.file_serializer import FileSerializer
 
 
 class FileDownloadView(GenericAPIView):
 
     @login_required
-    def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        serializer = FileSerializer(data=request.data)
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
-
-        file_id = serializer.validated_data.get('id')
-        file = File.objects.get(id=file_id)
+    def get(self, request: Request, pk: uuid, *args: Any, user: User, **kwargs: Any) -> Response:
+        file = File.objects.get(id=pk)
         file_path = file.absolute_path()
         if not os.path.exists(file_path) or not file.user.id == user.id:
             raise NotFoundError('File does not exist')
