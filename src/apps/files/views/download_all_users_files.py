@@ -21,17 +21,15 @@ class AllUsersFilesDownload(GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
 
-        dir_with_files_to_archive = os.path.join(self.permanent_storage.destination, str(user.id))
-        archive_into_this_dir = os.path.join(self.temp_storage.destination, str(user.id), str(user.username))
+        dir_to_archive = os.path.join(self.permanent_storage.destination, str(user.id))
+        archive_dir = os.path.join(self.temp_storage.destination, str(user.id), str(user.username))
 
-        if not os.path.exists(dir_with_files_to_archive) or len(os.listdir(dir_with_files_to_archive)) == 0:
+        if not os.path.exists(dir_to_archive) or len(os.listdir(dir_to_archive)) == 0:
             raise NotFoundError('Empty directory or its not exists')
-        archive = shutil.make_archive(base_name=archive_into_this_dir, format=DOWNLOAD__ARCHIVE__TYPE,
-                                      root_dir=dir_with_files_to_archive,
+        archive = shutil.make_archive(base_name=archive_dir, format=DOWNLOAD__ARCHIVE__TYPE,
+                                      root_dir=dir_to_archive,
                                       base_dir='.')
 
-        archive_path = os.path.join(archive_into_this_dir, archive)
-
         return Response(content_type='application/force-download',
-                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.zip"',
-                                 'X-Accel-Redirect': archive_path})
+                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.{DOWNLOAD__ARCHIVE__TYPE}"',
+                                 'X-Accel-Redirect': archive})

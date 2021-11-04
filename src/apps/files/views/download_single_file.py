@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from src.apps.accounts.authentication import login_required
 from src.apps.accounts.models import User
-from src.apps.base.services.std_error_handler import BadRequestError, NotFoundError
+from src.apps.base.services.std_error_handler import NotFoundError
 from src.apps.files.models import File
 from src.apps.files.serializers.file_serializer import FileSerializer
 
@@ -24,10 +24,8 @@ class FileDownloadView(GenericAPIView):
         file_id = serializer.validated_data.get('id')
         file = File.objects.get(id=file_id)
         file_path = file.absolute_path()
-        if not os.path.exists(file_path):
-            raise NotFoundError('file does not exist')
-        if not file.user.id == user.id:
-            raise BadRequestError('You do not have this file')
+        if not os.path.exists(file_path) or not file.user.id == user.id:
+            raise NotFoundError('File does not exist')
 
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.zip"',
