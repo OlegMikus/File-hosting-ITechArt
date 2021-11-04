@@ -22,5 +22,5 @@ class FileDownloadView(GenericAPIView):
             raise NotFoundError('File does not exist')
 
         return Response(content_type='application/force-download',
-                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.zip"',
+                        headers={'Content-Disposition': f'attachment; filename:"{file.name}"',
                                  'X-Accel-Redirect': file_path})
