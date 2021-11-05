@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('date_updated', models.DateTimeField(auto_now=True)),
                 ('is_alive', models.BooleanField(default=True)),
                 ('destination', models.CharField(max_length=256)),
-                ('name', models.CharField(max_length=256)),
+                ('name', models.CharField(max_length=256, editable=False)),
                 ('description', models.TextField()),
                 ('type', models.CharField(max_length=10)),
                 ('size', models.BigIntegerField()),
