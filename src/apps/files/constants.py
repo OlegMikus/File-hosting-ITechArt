@@ -3,6 +3,7 @@ FILE_STORAGE__TYPE__PERMANENT = 'permanent'
 ARCHIVE__TYPE = 'zip'
 FILE__NON_CHUNK__MAX_SIZE = 50 * 1024 * 1024
 CHUNKS__STORAGE_TIME__DAYS = 7
+USER_STORAGE__LOCATION__NGINX = '/user_storage'
 
 JPG__MIME_TYPE = 'image/jpeg'
 PNG__MIME_TYPE = 'image/png'
