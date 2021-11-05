@@ -10,7 +10,7 @@ class File(BaseModel):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     storage = models.ForeignKey(FilesStorage, on_delete=models.DO_NOTHING)
     destination = models.CharField(max_length=256)
-    name = models.CharField(max_length=256, editable=False)
+    name = models.CharField(max_length=256)
     description = models.TextField()
     type = models.CharField(max_length=10)
     size = models.BigIntegerField()
