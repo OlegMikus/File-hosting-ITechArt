@@ -17,9 +17,8 @@ class DashboardView(GenericAPIView):
     ordering_fields = ('name',)
     pagination_class = CustomPagination
 
-    # @login_required
-    def get(self, request: Request, *args: Any, **kwargs: Any) -> OkResponse:
-        user = User.objects.get(id='02c1ed06-43a8-458f-808d-d621fed0128c')
+    @login_required
+    def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
         print(queryset)
         serializer = FileSerializer(queryset, many=True)
