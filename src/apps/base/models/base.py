@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from src.apps.base.managers import IsAliveObjectsManager, AllObjectsManager
+
 
 class BaseModel(models.Model):
     """
@@ -11,6 +13,9 @@ class BaseModel(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     is_alive = models.BooleanField(default=True)
+
+    objects = IsAliveObjectsManager()
+    all_objects = AllObjectsManager()
 
     class Meta:
         """
