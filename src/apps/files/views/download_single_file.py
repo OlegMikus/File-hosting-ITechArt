@@ -1,6 +1,6 @@
 import os
-import uuid
 from typing import Any
+from uuid import UUID
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
@@ -15,12 +15,12 @@ from src.apps.files.models import File
 class FileDownloadView(GenericAPIView):
 
     @login_required
-    def get(self, request: Request, pk: uuid, *args: Any, user: User, **kwargs: Any) -> Response:
+    def get(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
         file = File.objects.get(id=pk)
-        file_path = file.absolute_path
-        if not os.path.exists(file_path) or not file.user.id == user.id:
-            raise NotFoundError('File does not exist')
 
+        if not os.path.exists(file.absolute_path) or not file.user.id == user.id:
+            raise NotFoundError('File does not exist')
+        file_path = file.destination
         return Response(content_type='application/force-download',
                         headers={'Content-Disposition': f'attachment; filename:"{file.name}"',
                                  'X-Accel-Redirect': file_path})
