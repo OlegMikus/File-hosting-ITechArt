@@ -15,6 +15,7 @@ from src.apps.files.models.files_storage import FilesStorage
 
 
 class NonChunkUploadView(GenericAPIView):
+    storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
@@ -22,15 +23,13 @@ class NonChunkUploadView(GenericAPIView):
         if not request.FILES.get('file'):
             raise BadRequestError('File is missing')
 
-        storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
         hash_sum = request.data.get('hash_sum')
-        filename = request.data.get('filename')
         file_data = request.FILES.get('file')
 
         if file_data.size > FILE__NON_CHUNK__MAX_SIZE:
             raise BadRequestError('File is too large')
 
-        user_storage_dir = os.path.join(storage.destination, str(user.id))
+        user_storage_dir = os.path.join(self.storage.destination, str(user.id))
         os.makedirs(user_storage_dir, 0o777, exist_ok=True)
 
         file_path = os.path.join(user_storage_dir, file_data.name)
@@ -48,5 +47,5 @@ class NonChunkUploadView(GenericAPIView):
             os.remove(file_path)
             raise BadRequestError(errors)
 
-        create_file(user, storage, os.path.join(str(user.id, filename)), request.data)
+        create_file(user, self.storage, request.data)
         return CreatedResponse({})

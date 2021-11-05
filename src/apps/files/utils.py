@@ -19,7 +19,7 @@ def is_valid_hash_md5(hash_sum: str, file_path: str) -> bool:
         return False
 
     with open(file_path, 'rb') as file:
-        chunk = 0
+        chunk = None
         while chunk != b'':
             chunk = file.read(1024)
             md5.update(chunk)
@@ -28,9 +28,9 @@ def is_valid_hash_md5(hash_sum: str, file_path: str) -> bool:
 
 def create_file(user: User,
                 storage: FilesStorage,
-                user_storage_dir: str,
                 data: Dict[str, Any]
                 ) -> None:
+    user_storage_dir = os.path.join(str(user.id), data.get('filename'))
     File.objects.create(user=user, storage=storage,
                         destination=user_storage_dir, name=data.get('filename'),
                         description=data.get('description'), type=data.get('extension'),
@@ -45,7 +45,7 @@ def is_valid_format(file_path: str) -> bool:
     if not file_path:
         return False
 
-    with open(file_path, 'r') as users_file:
+    with open(file_path, 'rb') as users_file:
         file = users_file.read(1024)
         file_type = magic.from_buffer(file, mime=True)
         return file_type in ALLOWED_FORMATS

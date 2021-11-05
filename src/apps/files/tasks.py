@@ -17,14 +17,14 @@ def task_build_file(user_id: str,
                     file_storage_id: str,
                     data: Dict[str, Any],
                     chunks_paths: List[str],
-                    user_storage_dir: str,
                     temp_chunks_storage: str) -> None:
 
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
     hash_sum = data.get('hash_sum')
+    user_storage_dir = os.path.join(str(user.id), data.get('filename'))
+    os.makedirs(user_storage_dir, 0o777, exist_ok=True)
     file_path = os.path.join(file_storage.destination, user_storage_dir)
-
     with open(file_path, 'ab') as target_file:
         for path in chunks_paths:
             with open(path, 'rb') as stored_chunk_file:
@@ -41,7 +41,7 @@ def task_build_file(user_id: str,
         os.remove(file_path)
         # TODO: send_mail() with errors, function here, will be created in another branch
         return None
-    create_file(user, file_storage, user_storage_dir, data)
+    create_file(user, file_storage, data)
 
 
 @celery_app.task
