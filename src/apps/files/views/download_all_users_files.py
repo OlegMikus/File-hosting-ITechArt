@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from src.apps.accounts.authentication import login_required
 from src.apps.accounts.models import User
 from src.apps.base.services.std_error_handler import NotFoundError
-from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, DOWNLOAD__ARCHIVE__TYPE, FILE_STORAGE__TYPE__TEMP
+from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, ARCHIVE__TYPE, FILE_STORAGE__TYPE__TEMP
 from src.apps.files.models import FilesStorage
 
 
@@ -26,10 +26,10 @@ class AllUsersFilesDownload(GenericAPIView):
 
         if not os.path.exists(dir_to_archive) or len(os.listdir(dir_to_archive)) == 0:
             raise NotFoundError('Empty directory or its not exists')
-        archive = shutil.make_archive(base_name=archive_dir, format=DOWNLOAD__ARCHIVE__TYPE,
+        archive = shutil.make_archive(base_name=archive_dir, format=ARCHIVE__TYPE,
                                       root_dir=dir_to_archive,
                                       base_dir='.')
 
         return Response(content_type='application/force-download',
-                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.{DOWNLOAD__ARCHIVE__TYPE}"',
+                        headers={'Content-Disposition': f'attachment; filename:"{str(user.username)}.{ARCHIVE__TYPE}"',
                                  'X-Accel-Redirect': archive})
