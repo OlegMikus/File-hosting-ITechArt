@@ -10,7 +10,7 @@ from src.apps.base.services.responses import OkResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 
 
-class ProfileView(GenericAPIView):
+class UserProfileView(GenericAPIView):
 
     @login_required
     def get(self, request: Request, *args: Any,  user: User, **kwargs: Any) -> OkResponse:
