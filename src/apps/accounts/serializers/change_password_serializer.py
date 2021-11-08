@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 
 from src.apps.accounts.models import User
 from src.apps.accounts.validators import validate_password
-from src.apps.base.services.std_error_handler import BadRequestError
 
 
 class ChangePasswordSerializer(serializers.Serializer):
