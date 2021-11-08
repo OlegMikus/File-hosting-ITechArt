@@ -15,16 +15,16 @@ from src.apps.files.serializers.file_serializer import FileSerializer
 class FileDetailView(GenericAPIView):
 
     @login_required
-    def get(self, request: Request, *args: Any, pk: UUID, user: User, **kwargs: Any) -> OkResponse:
-        file = File.objects.filter(id=pk, user=user).first()
+    def get(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
+        file = File.objects.filter(id=primary_key, user=user).first()
         if not file:
             raise BadRequestError('File does not exist')
         serializer = FileSerializer(file)
         return OkResponse(serializer.data)
 
     @login_required
-    def put(self, request: Request, *args: Any, pk: UUID, user: User, **kwargs: Any) -> OkResponse:
-        file = File.objects.filter(id=pk, user=user).first()
+    def put(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
+        file = File.objects.filter(id=primary_key, user=user).first()
         serializer = FileSerializer(file, data=request.data)
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
@@ -32,8 +32,8 @@ class FileDetailView(GenericAPIView):
         return OkResponse(serializer.data)
 
     @login_required
-    def delete(self, request: Request, *args: Any, pk: UUID, user: User, **kwargs: Any) -> OkResponse:
-        file = File.objects.filter(id=pk, user=user).first()
+    def delete(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
+        file = File.objects.filter(id=primary_key, user=user).first()
         if not file:
             raise BadRequestError('File does not exist')
         file.is_alive = False
