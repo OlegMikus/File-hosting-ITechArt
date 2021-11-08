@@ -14,7 +14,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password_repeat = serializers.CharField(required=True)
     old_password = serializers.CharField(required=True)
 
-    def validate(self, attrs) -> Dict[str, Any]:
+    def validate(self, attrs: Dict[str, Any]) -> Dict[str, Any]:
 
         old_password = attrs.get('old_password')
         new_password = attrs.get('new_password')
