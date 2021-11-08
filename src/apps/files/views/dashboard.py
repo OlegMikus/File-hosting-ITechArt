@@ -20,7 +20,6 @@ class DashboardView(GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
-        print(queryset)
         serializer = FileSerializer(queryset, many=True)
         page = self.paginate_queryset(serializer.data)
         return OkResponse(page)
