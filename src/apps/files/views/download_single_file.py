@@ -15,8 +15,8 @@ from src.apps.files.models import File
 class FileDownloadView(GenericAPIView):
 
     @login_required
-    def get(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
-        file = File.objects.filter(id=pk, user=user).first()
+    def get(self, request: Request, primary_key: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
+        file = File.objects.filter(id=primary_key, user=user).first()
 
         if not file or not os.path.isfile(file.absolute_path):
             raise NotFoundError('File does not exist')

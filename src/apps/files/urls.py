@@ -12,6 +12,6 @@ urlpatterns = [
     path('upload/chunks/', UploadView.as_view(), name='upload-chunks'),
     path('build/', BuildFileView.as_view(), name='build'),
     path('upload/non-chunk/', NonChunkUploadView.as_view(), name='upload-non-chunk'),
-    path('<uuid:pk>/download/', FileDownloadView.as_view(), name='download-file'),
+    path('<uuid:primary_key>/download/', FileDownloadView.as_view(), name='download-file'),
     path('download/', AllUsersFilesDownload.as_view(), name='download-all-files'),
 ]
