@@ -19,6 +19,8 @@ class UserProfileView(GenericAPIView):
 
     @login_required
     def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
+        if User.objects.filter(email=request.data.get('email')).exists():
+            raise BadRequestError('This email already exists')
         serializer = UserSerializer(user, data=request.data)
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
