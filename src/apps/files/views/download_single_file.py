@@ -18,7 +18,7 @@ class FileDownloadView(GenericAPIView):
     def get(self, request: Request, pk: UUID, *args: Any, user: User, **kwargs: Any) -> Response:
         file = File.objects.filter(id=pk, user=user).first()
 
-        if not file or not os.path.exists(file.absolute_path):
+        if not file or not os.path.isfile(file.absolute_path):
             raise NotFoundError('File does not exist')
         file_path = file.destination
         return Response(content_type='application/force-download',
