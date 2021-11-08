@@ -13,8 +13,12 @@ from src.apps.base.services.std_error_handler import BadRequestError
 class ChangePasswordView(GenericAPIView):
 
     @login_required
-    def put(self, request: Request, *args: Any,  user: User, **kwargs: Any) -> OkResponse:
-        serializer = ChangePasswordSerializer(user, data=request.data)
+    def put(self, request: Request, *args: Any, user: User, **kwargs: Any):
+        serializer = ChangePasswordSerializer(data=request.data, context=user)
+
         if not serializer.is_valid():
-            raise BadRequestError('')
+            raise BadRequestError('Wrong data')
+
+        user.set_password(serializer.data.get("new_password"))
+        user.save()
         return OkResponse({})
