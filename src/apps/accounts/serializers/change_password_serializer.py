@@ -26,3 +26,8 @@ class ChangePasswordSerializer(serializers.Serializer):
         if new_password != new_password_repeat:
             raise ValidationError('Passwords do not match')
         return attrs
+
+    def set_password(self) -> None:
+        user = self.context.get('user')
+        user.set_password(self.validated_data.get('new_password'))
+        user.save()
