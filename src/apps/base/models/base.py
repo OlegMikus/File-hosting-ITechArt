@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from django.db import models
 
@@ -16,6 +17,10 @@ class BaseModel(models.Model):
 
     objects = IsAliveObjectsManager()
     all_objects = AllObjectsManager()
+
+    def delete(self, *args: Any, **kwargs: Any) -> None:
+        self.is_alive = False
+        super().save(*args, **kwargs)
 
     class Meta:
         """
