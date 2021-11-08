@@ -16,7 +16,7 @@ CWD="$(pwd)"
 PY_FILES=$(find ./src -type f -name "*.py" ! -path './.*' -not -path "**/migrations/*" -not -path "**/settings/*")
 
 echo '>>> running pylint'
-pylint --max-line-length=120 --disable=E1101,C0116,C0114,R0903,R0401,C0413,C0115,W0613,R1710 $PY_FILES
+pylint --max-line-length=120 --disable=E1101,C0116,C0114,R0903,R0401,C0413,C0115,W0613,R1710,W0223,R0801,W0511,R1729 $PY_FILES
 
 echo '>>> running flake8'
 flake8 $PY_FILES
