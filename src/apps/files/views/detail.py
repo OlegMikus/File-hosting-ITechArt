@@ -36,6 +36,5 @@ class FileDetailView(GenericAPIView):
         file = File.objects.filter(id=primary_key, user=user).first()
         if not file:
             raise BadRequestError('File does not exist')
-        file.is_alive = False
-        file.save()
+        file.delete()
         return OkResponse({})
