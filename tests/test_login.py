@@ -1,2 +1,9 @@
+import pytest
+
+from src.apps.accounts.models import User
+
+
+@pytest.mark.django_db
 def test_temp() -> None:
-    assert 1 == 1
+    User.objects.create_user(username='john', email='lennon@thebeatles.com', first_name='johnpassword')
+    assert User.objects.count() == 1
