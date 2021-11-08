@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import QuerySet
 
 
-class ExistingQuerySet(models.query.QuerySet):
+class BaseQuerySet(models.query.QuerySet):
     """
     QuerySet whose delete() does not delete items, but instead marks the rows as not alive
     """
@@ -15,9 +15,9 @@ class ExistingQuerySet(models.query.QuerySet):
 
 class IsAliveObjectsManager(models.Manager):
     def get_queryset(self) -> QuerySet:
-        return ExistingQuerySet(self.model).only_alive()
+        return BaseQuerySet(self.model).only_alive()
 
 
 class AllObjectsManager(models.Manager):
     def get_queryset(self) -> QuerySet:
-        return ExistingQuerySet(self.model)
+        return BaseQuerySet(self.model)
