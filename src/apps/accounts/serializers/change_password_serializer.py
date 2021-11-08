@@ -20,7 +20,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         new_password = attrs.get('new_password')
         new_password_repeat = attrs.get('new_password_repeat')
 
-        if not self.context.check_password(old_password):
+        user = User.objects.filter(id=self.context.get('user').id)
+
+        if not user.check_password(old_password):
             raise ValidationError('Wrong password')
         if new_password != new_password_repeat:
             raise ValidationError('passwords do not match')
