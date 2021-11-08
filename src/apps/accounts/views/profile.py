@@ -13,7 +13,7 @@ from src.apps.base.services.std_error_handler import BadRequestError
 class UserProfileView(GenericAPIView):
 
     @login_required
-    def get(self, request: Request, *args: Any,  user: User, **kwargs: Any) -> OkResponse:
+    def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         serializer = UserSerializer(user)
         return OkResponse(serializer.data)
 
@@ -26,4 +26,3 @@ class UserProfileView(GenericAPIView):
             raise BadRequestError(serializer.errors)
         serializer.save()
         return OkResponse(serializer.data)
-

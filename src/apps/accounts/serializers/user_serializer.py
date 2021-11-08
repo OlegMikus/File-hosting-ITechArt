@@ -1,5 +1,3 @@
-from typing import Any, Dict
-
 from rest_framework.serializers import ModelSerializer
 
 from src.apps.accounts.models import User

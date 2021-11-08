@@ -3,7 +3,6 @@ from typing import Dict, Any
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from src.apps.accounts.models import User
 from src.apps.accounts.validators import validate_password
 
 
