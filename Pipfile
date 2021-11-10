@@ -14,10 +14,11 @@ datetime = "==4.3"
 celery = "==5.1.2"
 python-magic = "==0.4.24"
 django-cors-headers = "==3.10.0"
-
-[dev-packages]
 pytest = "==6.2.5"
 pytest-django = "==4.4.0"
+pytest-cov = "==3.0.0"
+
+[dev-packages]
 pylint = "==2.11.1"
 flake8 = "==3.9.2"
 mypy = "==0.910"
@@ -29,3 +30,4 @@ python_version = "3.9"
 [scripts]
 start = 'bash ./scripts/start.sh'
 cleanup = 'bash ./scripts/cleanup.sh'
+test = 'bash ./scripts/tests.sh'
