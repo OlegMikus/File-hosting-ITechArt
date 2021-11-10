@@ -13,7 +13,8 @@ def test_password():
 
 
 @pytest.fixture
-def create_user(db, django_user_model, test_password):
+@pytest.mark.django_db
+def create_user(django_user_model, test_password):
     def make_user(**kwargs):
         kwargs['password'] = test_password
         if 'username' not in kwargs:
@@ -24,7 +25,7 @@ def create_user(db, django_user_model, test_password):
 
 
 @pytest.fixture
-def create_token_for_user(db, create_user):
+def create_token_for_user(create_user):
     from src.apps.accounts.views.login import create_tokens
     user = create_user()
     token, refresh_token = create_tokens(user_id=str(user.id))
@@ -32,7 +33,8 @@ def create_token_for_user(db, create_user):
 
 
 @pytest.fixture
-def create_file(db, create_token_for_user):
+@pytest.mark.django_db
+def create_file(create_token_for_user):
     from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
     File.objects.create(user=create_token_for_user[1],
                         storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
