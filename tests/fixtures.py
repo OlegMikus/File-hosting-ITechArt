@@ -4,8 +4,6 @@ import uuid
 
 import pytest
 
-from src.apps.files.models import File, FilesStorage
-
 
 @pytest.fixture
 def test_password():
@@ -35,6 +33,7 @@ def create_token_for_user(create_user):
 @pytest.fixture
 @pytest.mark.django_db
 def create_file(create_token_for_user):
+    from src.apps.files.models import File, FilesStorage
     from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
     File.objects.create(user=create_token_for_user[1],
                         storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
