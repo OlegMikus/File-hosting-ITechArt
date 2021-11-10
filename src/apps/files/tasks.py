@@ -52,7 +52,7 @@ def task_remove_file(file_path: str) -> None:
 
 
 @celery_app.task
-def task_clean_storage() -> None:
+def task_remove_deleted_files() -> None:
     files = File.all_objects.filter(is_alive=False)
     for file in files:
         if not os.path.exists(file.absolute_path) or not os.path.isfile(file.absolute_path):
