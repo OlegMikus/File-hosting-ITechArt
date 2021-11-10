@@ -13,5 +13,4 @@ FILE_DIR=$(pwd)
 cd ..
 CWD="$(pwd)"
 
-
-docker-compose -f docker-compose-testsing.yml up --abort-on-container-exit
+docker-compose -f docker-compose-testing.yml run --rm testapp_auth bash -c "pytest ."
