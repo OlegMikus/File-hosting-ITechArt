@@ -11,14 +11,5 @@ services:
       dockerfile: ./srv/app/Dockerfile
     volumes:
       - .:/app
-      - ./static/:/static
-      - ./storage/:/storage
-    ports:
-      - 8000:8000
-    expose:
-      - 8000
     networks:
       - trainee_network
-
-volumes:
-  postgres_data:
