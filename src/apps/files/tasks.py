@@ -45,7 +45,9 @@ def task_build_file(user_id: str,
 
 
 @celery_app.task
-def remove_files_with_deleted_mark(file_path: str) -> None:
+def task_remove_file(file_path: str) -> None:
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        return None
     shutil.rmtree(file_path)
 
 
@@ -59,7 +61,7 @@ def task_clean_storage() -> None:
 
 
 @celery_app.task
-def remove_expired_chunks() -> None:
+def task_remove_expired_chunks() -> None:
     storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
     users_dirs = os.listdir(storage.destination)
 
