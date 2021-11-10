@@ -6,7 +6,7 @@ from typing import List, Any, Dict
 
 from src.apps.accounts.models import User
 from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS, ALLOWED_FORMATS
-from src.apps.files.models import FilesStorage
+from src.apps.files.models import FilesStorage, File
 from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
 
 from src.etl.celery import celery_app
@@ -45,7 +45,23 @@ def task_build_file(user_id: str,
 
 
 @celery_app.task
-def remove_expired_chunks() -> None:
+def task_remove_file(file_path: str) -> None:
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        return None
+    shutil.rmtree(file_path)
+
+
+@celery_app.task
+def task_remove_deleted_files() -> None:
+    files = File.all_objects.filter(is_alive=False)
+    for file in files:
+        if not os.path.exists(file.absolute_path) or not os.path.isfile(file.absolute_path):
+            continue
+        shutil.rmtree(file.absolute_path)
+
+
+@celery_app.task
+def task_remove_expired_chunks() -> None:
     storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
     users_dirs = os.listdir(storage.destination)
 
