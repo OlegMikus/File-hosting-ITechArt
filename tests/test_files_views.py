@@ -138,3 +138,9 @@ class TestFileViews:
         url = reverse('upload-template')
         response = api_client.get(url)
         assert response.status_code == 400
+
+    def test_download_single_file_view(self, create_token_for_user: Tuple[str, User], api_client: APIClient, create_file: File) -> None:
+        url = reverse('download-file', kwargs={'primary_key': create_file.id})
+        api_client.credentials(HTTP_Access_Token=create_token_for_user[0])
+        response = api_client.get(url)
+        assert response.status_code == 200
