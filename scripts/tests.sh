@@ -14,4 +14,4 @@ cd ..
 CWD="$(pwd)"
 
 
-pytest .
+docker-compose -f docker-compose-testsing.yml up --abort-on-container-exit
