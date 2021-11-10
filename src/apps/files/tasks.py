@@ -50,7 +50,7 @@ def remove_files_with_deleted_mark(file_path: str) -> None:
 
 
 @celery_app.task
-def remove_files_with_deleted_mark_once_per_month() -> None:
+def remove_files_with_deleted_mark_once_per_period() -> None:
     queryset = File.all_objects.filter(is_alive=False)
     for file in queryset:
         if not os.path.exists(file.absolute_path) or not os.path.isfile(file.absolute_path):

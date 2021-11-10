@@ -17,7 +17,7 @@ celery_app.conf.beat_schedule = {
         'schedule': crontab(day_of_week='*', hour=4, minute=0),
     },
     'remove_files_with_deleted_mark_once_per_month': {
-        'task': 'src.apps.files.tasks.remove_files_with_deleted_mark_once_per_month',
+        'task': 'src.apps.files.tasks.remove_files_with_deleted_mark_once_per_period',
         'schedule': crontab(month_of_year='*', day_of_month='1', hour=5, minute=0),
     }
 }
