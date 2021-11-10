@@ -23,7 +23,7 @@ class TestUserViews:
         data = {'username': 'TestUser'}
         response = api_client.post(url, data=data)
         assert response.status_code == 400
-        assert response.data['data']['error_detail'].key() == 'password'
+        assert 'password' in response.data['data']['error_detail'][0].keys()
 
     def test_login_view(self, create_user, test_password: str, api_client: APIClient) -> None:
         user = create_user()
