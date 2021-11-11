@@ -1,6 +1,6 @@
 import re
 
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 
 
 def validate_age(value: int) -> None:

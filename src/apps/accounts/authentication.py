@@ -22,7 +22,7 @@ def login_required(func: Any) -> Any:
                 return func(user=user, *args, **kwargs)
 
         except jwt.ExpiredSignatureError as expired_signature:
-            raise ForbiddenError(expired_signature) from expired_signature
+            raise ForbiddenError(expired_signature.args[0]) from expired_signature
         except jwt.InvalidSignatureError as invalid_signature:
             raise ForbiddenError(invalid_signature.args[0]) from invalid_signature
     return decorated
