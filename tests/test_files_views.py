@@ -18,7 +18,8 @@ class TestFileViews:
         response = api_client.get(url)
         assert response.status_code == 200
 
-    def test_upload_chunks_get_view_authenticate(self, api_client: APIClient, create_token_for_user: Tuple[str, User]) -> None:
+    def test_upload_chunks_get_view_authenticate(self, api_client: APIClient,
+                                                 create_token_for_user: Tuple[str, User]) -> None:
         url = reverse('upload-chunks')
         api_client.credentials(HTTP_Access_Token=create_token_for_user[0])
         response = api_client.get(
@@ -27,7 +28,8 @@ class TestFileViews:
                   'resumableTotalChunks=1&resumableHash=hashChunk&resumableDescription=description')
         assert response.status_code == 404
 
-    def test_upload_chunks_post_view_authenticate(self, api_client: APIClient, create_token_for_user: Tuple[str, User]) -> None:
+    def test_upload_chunks_post_view_authenticate(self, api_client: APIClient,
+                                                  create_token_for_user: Tuple[str, User]) -> None:
         url = reverse('upload-chunks')
         api_client.credentials(HTTP_Access_Token=create_token_for_user[0])
         data = {
@@ -108,7 +110,8 @@ class TestFileViews:
                                    data=data)
         assert response.status_code == 400
 
-    def test_upload_non_chunks_view_unauthenticated(self, api_client: APIClient, create_upload_file_data: Dict[str, Any]) -> None:
+    def test_upload_non_chunks_view_unauthenticated(self, api_client: APIClient,
+                                                    create_upload_file_data: Dict[str, Any]) -> None:
         url = reverse('upload-non-chunk')
         response = api_client.post(url, data=create_upload_file_data)
         assert response.status_code == 400
@@ -139,8 +142,14 @@ class TestFileViews:
         response = api_client.get(url)
         assert response.status_code == 400
 
-    def test_download_single_file_view(self, create_token_for_user: Tuple[str, User], api_client: APIClient, create_file: File) -> None:
+    def test_fail_download_single_file_view(self, create_token_for_user: Tuple[str, User], api_client: APIClient, create_file: File) -> None:
         url = reverse('download-file', kwargs={'primary_key': create_file.id})
         api_client.credentials(HTTP_Access_Token=create_token_for_user[0])
         response = api_client.get(url)
-        assert response.status_code == 200
+        assert response.status_code == 404
+        assert 'X-Accel-Redirect' not in response.headers.keys()
+
+    def test_fail_download_single_file_view_unauthenticated(self, create_token_for_user: Tuple[str, User], api_client: APIClient, create_file: File) -> None:
+        url = reverse('download-file', kwargs={'primary_key': create_file.id})
+        response = api_client.get(url)
+        assert response.status_code == 400
