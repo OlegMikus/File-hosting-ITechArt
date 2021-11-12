@@ -1,7 +1,6 @@
 from typing import Callable
 
 import pytest
-from rest_framework.exceptions import ValidationError
 
 from src.apps.accounts.serializers.change_password_serializer import ChangePasswordSerializer
 from src.apps.accounts.serializers.login_serializer import UserLoginSerializer
