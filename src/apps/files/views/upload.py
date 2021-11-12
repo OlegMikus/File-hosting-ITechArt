@@ -50,6 +50,9 @@ class UploadView(GenericAPIView):
         chunk_number = serializer.validated_data.get('chunk_number')
 
         chunk_data = request.FILES.get('file')
+        if not chunk_data:
+            raise BadRequestError('Missing file')
+
         temp_chunks_storage = os.path.join(self.file_storage_path, str(user.id), identifier)
         os.makedirs(temp_chunks_storage, 0o777, exist_ok=True)
 
