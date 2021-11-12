@@ -1,12 +1,14 @@
 from typing import Callable
+
+import pytest
 from rest_framework.test import APIClient
 from django.urls import reverse
 
-from src.apps.accounts.models import User
 from src.apps.files.models import File
 from src.apps.files.serializers.file_serializer import FileSerializer
 
 
+@pytest.mark.django_db
 class TestFileDashboardViews:
     def test_dashboard_view_authenticate(self, api_client: APIClient, create_user: Callable,
                                          create_token_for_user: Callable) -> None:
@@ -21,6 +23,7 @@ class TestFileDashboardViews:
         assert response.status_code == 401
 
 
+@pytest.mark.django_db
 class TestFileUploadByChunksView:
 
     def test_upload_chunks_get_view_authenticate(self, api_client: APIClient, create_user: Callable,
@@ -51,6 +54,7 @@ class TestFileUploadByChunksView:
         assert response.status_code == 401
 
 
+@pytest.mark.django_db
 class TestNonChinkUploadView:
 
     def test_upload_non_chunks_view_authenticate(self, api_client: APIClient, create_user: Callable,
@@ -66,6 +70,7 @@ class TestNonChinkUploadView:
         assert response.status_code == 401
 
 
+@pytest.mark.django_db
 class TestDetailView:
 
     def test_detail_get_view_authenticate(self, api_client: APIClient, create_user: Callable,
@@ -131,6 +136,7 @@ class TestDetailView:
         assert file.is_alive is True
 
 
+@pytest.mark.django_db
 class TestUploadTemplateView:
 
     def test_upload_view_authenticate(self, api_client: APIClient, create_user: Callable,
@@ -146,6 +152,7 @@ class TestUploadTemplateView:
         assert response.status_code == 401
 
 
+@pytest.mark.django_db
 class TestDownloadSingleView:
     def test_fail_download_single_file_view(self, create_token_for_user: Callable, create_user: Callable,
                                             api_client: APIClient,
