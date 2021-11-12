@@ -26,6 +26,7 @@ class TestUserSignupView:
         assert 'password' in response.data['data']['error_detail'][0].keys()
 
 
+@pytest.mark.django_db
 class TestUserLoginView:
 
     def test_login_view(self, api_client: APIClient, create_user: Callable) -> None:
@@ -45,6 +46,7 @@ class TestUserLoginView:
         assert response.data['data']['error_detail'] == ('Invalid username or password',)
 
 
+@pytest.mark.django_db
 class TestUserRefreshView:
     def test_refresh_view(self, api_client: APIClient, create_token_for_user: Callable, create_user: Callable) -> None:
         url = reverse('refresh')
@@ -59,6 +61,7 @@ class TestUserRefreshView:
         assert response.data['data']['error_detail'] == ('Missing token',)
 
 
+@pytest.mark.django_db
 class TestUserProfileView:
 
     def test_profile_get_view(self, create_token_for_user: Callable, create_user: Callable,
@@ -96,6 +99,7 @@ class TestUserProfileView:
         assert response.data['data']['error_detail'] == ('Missing token',)
 
 
+@pytest.mark.django_db
 class TestUserChangePasswordView:
 
     def test_change_password_view(self, api_client: APIClient, create_user: Callable,
