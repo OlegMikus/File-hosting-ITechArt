@@ -1,59 +1,53 @@
-import io
 import os
 import uuid
+from typing import Any, Callable
 
 import pytest
+
+from src.apps.accounts.models import User
 from src.apps.accounts.views.login import create_tokens
+from src.apps.files.models import File, FilesStorage
+from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
+from rest_framework.test import APIClient
+
+
+@pytest.fixture
+def api_client() -> APIClient:
+    return APIClient()
 
 
 @pytest.fixture
 @pytest.mark.django_db
-def create_user(django_user_model):
-    def make_user(**kwargs):
+def create_user() -> Callable:
+    def make_user(**kwargs: Any) -> User:
         kwargs['password'] = 'Afe3#@vdfvrrcvs'
         if 'username' not in kwargs:
             kwargs['username'] = str(uuid.uuid4())
-        return django_user_model.objects.create_user(**kwargs)
+            kwargs['email'] = f'{str(uuid.uuid4())}@test.test'
+        return User.objects.create_user(**kwargs)
 
     return make_user
 
 
 @pytest.fixture
-def create_token_for_user():
-    def make_token(user):
+def create_token_for_user() -> Callable:
+    def make_token(user: User) -> str:
         token, refresh_token = create_tokens(user_id=str(user.id))
         return token
+
     return make_token
 
-#
-# @pytest.fixture
-# @pytest.mark.django_db
-# def create_file(create_token_for_user):
-#     from src.apps.files.models import File, FilesStorage
-#     from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT
-#     File.objects.create(user=create_token_for_user[1],
-#                         storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
-#                         destination=os.path.join(str(create_token_for_user[1].id), 'file.txt'),
-#                         name='file.txt',
-#                         type='text/plain',
-#                         size=321351,
-#                         hash='dkigfbdgkfl43rfldfbd'
-#                         )
-#     return File.objects.filter(name='file.txt').first()
 
-#
-# @pytest.fixture
-# def create_upload_file_data():
-#     return {
-#         'file': (io.BytesIO(b"some initial text data"), 'file.txt'),
-#         'hash_sum': 'a2827ed8c47e1a385bbd469def62aafd',
-#         'description': 'test description',
-#         'extension': 'text/plain',
-#         'total_size': '234',
-#         'filename': 'file'
-#     }
-#
 @pytest.fixture
-def api_client():
-    from rest_framework.test import APIClient
-    return APIClient()
+@pytest.mark.django_db
+def create_file() -> Callable:
+    def make_file(user: User) -> File:
+        File.objects.create(user=user,
+                            storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
+                            destination=os.path.join(str(user.id), 'file.txt'),
+                            name='file.txt', type='text/plain',
+                            size=321351, hash='dkigfbdgkfl43rfldfbd'
+                            )
+        return File.objects.filter(name='file.txt').first()
+
+    return make_file
