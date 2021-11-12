@@ -16,6 +16,6 @@ class ChangePasswordView(GenericAPIView):
     def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         serializer = ChangePasswordSerializer(data=request.data, context={'user': user})
         if not serializer.is_valid():
-            raise BadRequestError('Wrong data')
+            raise BadRequestError(serializer.errors)
         serializer.set_password()
         return OkResponse({})
