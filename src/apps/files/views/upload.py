@@ -43,13 +43,16 @@ class UploadView(GenericAPIView):
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
-            raise BadRequestError({})
+            raise BadRequestError(serializer.errors)
 
         identifier = serializer.validated_data.get('identifier')
         filename = serializer.validated_data.get('filename')
         chunk_number = serializer.validated_data.get('chunk_number')
 
         chunk_data = request.FILES.get('file')
+        if not chunk_data:
+            raise BadRequestError('Missing file')
+
         temp_chunks_storage = os.path.join(self.file_storage_path, str(user.id), identifier)
         os.makedirs(temp_chunks_storage, 0o777, exist_ok=True)
 

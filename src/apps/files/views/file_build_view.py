@@ -25,7 +25,7 @@ class BuildFileView(GenericAPIView):
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
         serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
         if not serializer.is_valid():
-            raise BadRequestError()
+            raise BadRequestError(serializer.errors)
 
         total_chunks = serializer.validated_data.get('total_chunks')
         filename = serializer.validated_data.get('filename')

@@ -6,7 +6,7 @@ from rest_framework.request import Request
 
 from src.apps.accounts.views.login import create_tokens
 from src.apps.accounts.models import User
-from src.apps.base.services.std_error_handler import ForbiddenError, BadRequestError
+from src.apps.base.services.std_error_handler import ForbiddenError, UnauthorizedError
 from src.apps.base.services.responses import OkResponse
 from src.config.env_consts import DJANGO_SECRET_KEY
 
@@ -19,7 +19,7 @@ class RefreshView(GenericAPIView):
         refresh_token = request.headers.get('Refresh-Token')
 
         if not refresh_token:
-            raise BadRequestError('Missing token')
+            raise UnauthorizedError('Missing token')
 
         try:
             payload = jwt.decode(
@@ -39,6 +39,6 @@ class RefreshView(GenericAPIView):
 
             return OkResponse(response)
         except jwt.ExpiredSignatureError as expired_signature:
-            raise ForbiddenError(expired_signature) from expired_signature
+            raise ForbiddenError(expired_signature.args[0]) from expired_signature
         except jwt.InvalidTokenError as invalid_token:
-            raise ForbiddenError(invalid_token) from invalid_token
+            raise ForbiddenError(invalid_token.args[0]) from invalid_token
