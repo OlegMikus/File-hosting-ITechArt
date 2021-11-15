@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Upload non chunk</title>
+</head>
+
+<body>
+<label for="description-text">Description</label>
+
+<input type="text" id="description-text">
+<form method="post" enctype="multipart/form-data" action="">
+    <input type="button" id="btn" value="GO"/>
+    <input type="file" id="file" name="file"/>
+</form>
+<script>
+    var formData = new FormData();
+    const fileField = document.querySelector('input[type="file"]');
+    formData.append("file", fileField.files[0]);
+    formData.append("total_size", 500555)
+    formData.append("extension", 'image/jpeg')
+    formData.append("filename", 'nT1GuMCuM9I.jpg')
+    formData.append("hash_sum", 'cab9279871936b5c987531c5f1de1a15')
+    console.log(document.getElementById("description-text").value)
+    formData.append("description", document.getElementById("description-text").value)
+
+    const url = 'http://0.0.0.0:1337/api/files/upload/non-chunk/'
+    const btn = document.querySelector("#btn");
+    btn.addEventListener("click", () => {
+        fetch(url, {
+            method: "POST",
+            body: formData,
+            headers: {
+                'Content-Type': 'application/json',
+                'access-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjAyYzFlZDA2LTQzYTgtNDU4Zi04MDhkLWQ2MjFmZWQwMTI4YyIsImV4cCI6MTY1MTQ5NDM5N30.6_n9S2wr4aCjFayDxxk787ra64Ebq7f0KQTfjgUUDfw'
+            }
+        })
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SignUp</title>
+</head>
+
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<h1>SignUp Page</h1>
+
+<h3>Username</h3>
+<input type="text" id="username">
+<h3>Password</h3>
+<input type="text" id="password">
+<h3>Email</h3>
+<input type="text" id="email">
+<h3>First name</h3>
+<input type="text" id="first-name">
+<h3>Last name</h3>
+<input type="text" id="last-name">
+<h3>age</h3>
+<input type="text" id="age">
+
+
+<form method="post" enctype="multipart/form-data" action="">
+    <input type="button" id="btn" value="SignUp"/>
+</form>
+<script>
+    const data = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value,
+        email: document.getElementById("email").value,
+        first_name: document.getElementById("first-name").value,
+        last_name: document.getElementById("last-name").value,
+        age: document.getElementById("age").value
+    }
+    var url = 'http://0.0.0.0:1337/api/users/signup/'
+    const btn = document.querySelector("#btn");
+    btn.addEventListener("click", () => {
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    })
+
+</script>
+</body>
+</html>
