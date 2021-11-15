@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
 
     'src.apps.accounts',
     'src.apps.base',
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'src.config.urls'
@@ -119,3 +121,10 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.apps.base.services.std_error_handler.std_error_handler'
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'access-token',
+    'Content-Type'
+]
