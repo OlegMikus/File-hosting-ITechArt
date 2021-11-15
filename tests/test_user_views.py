@@ -127,4 +127,3 @@ class TestUserChangePasswordView:
         }
         response = api_client.put(url, data)
         assert response.status_code == 400
-        assert response.data['data']['error_detail'] == ('Wrong data',)
