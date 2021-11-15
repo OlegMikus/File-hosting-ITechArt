@@ -157,8 +157,9 @@ class TestDownloadSingleView:
     def test_returns_404_when_file_does_not_exist(self, create_token_for_user: Callable, create_user: Callable,
                                             api_client: APIClient,
                                             create_file: Callable) -> None:
-        url = reverse('download-file', kwargs={'primary_key': str(create_file(create_user()).id)})
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        user = create_user()
+        url = reverse('download-file', kwargs={'primary_key': str(create_file(user).id)})
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(user))
         response = api_client.get(url)
         assert response.status_code == 404
         assert 'X-Accel-Redirect' not in response.headers.keys()

@@ -20,11 +20,15 @@ def api_client() -> APIClient:
 @pytest.mark.django_db
 def create_user() -> Callable:
     def make_user(**kwargs: Any) -> User:
-        kwargs['password'] = 'Afe3#@vdfvrrcvs'
-        if 'username' not in kwargs:
-            kwargs['username'] = str(uuid.uuid4())
-            kwargs['email'] = f'{str(uuid.uuid4())}@test.test'
-        return User.objects.create_user(**kwargs)
+        username = kwargs.pop('username', 'username')
+        password = kwargs.pop('password', 'Afe3#@vdfvrrcvs')
+        email = kwargs.pop('email', 'test@gmail.com')
+        return User.objects.create_user(
+            username=username,
+            password=password,
+            email=email,
+            **kwargs
+        )
 
     return make_user
 

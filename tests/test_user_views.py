@@ -35,6 +35,7 @@ class TestUserLoginView:
         data = {'username': user.username, 'password': 'Afe3#@vdfvrrcvs'}
         response = api_client.post(url, data=data)
         assert response.status_code == 200
+        assert User.objects.count() == 1
         assert response.data['data']['result']['id'] == str(user.id)
 
     def test_returns_400_when_invalid_password(self, api_client: APIClient, create_user: Callable) -> None:
@@ -43,6 +44,8 @@ class TestUserLoginView:
         data = {'username': user.username, 'password': 'dfkoijgdpfog'}
         response = api_client.post(url, data=data)
         assert response.status_code == 400
+        assert User.objects.count() == 1
+
         assert response.data['data']['error_detail'] == ('Invalid username or password',)
 
 

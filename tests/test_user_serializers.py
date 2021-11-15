@@ -11,19 +11,22 @@ from src.apps.base.services.std_error_handler import BadRequestError
 class TestLoginSerializer:
 
     def test_pass_when_valid_user_data(self, create_user: Callable) -> None:
-        data = {'id': create_user().id, 'username': create_user().username, 'password': 'Afe3#@vdfvrrcvs'}
+        user = create_user()
+        data = {'id': user.id, 'username': user.username, 'password': 'Afe3#@vdfvrrcvs'}
         serializer = UserLoginSerializer(data=data)
         assert serializer.is_valid() is True
 
     def test_fails_when_invalid_username(self, create_user: Callable) -> None:
-        data = {'id': create_user().id, 'username': 'username', 'password': 'Afe3#@vdfvrrcvs'}
-        serializer = UserLoginSerializer(data=data, context={'user': create_user})
+        user = create_user()
+        data = {'id': user.id, 'username': 'test', 'password': 'Afe3#@vdfvrrcvs'}
+        serializer = UserLoginSerializer(data=data, context={'user': user})
         with pytest.raises(BadRequestError):
             serializer.is_valid()
 
     def test_fails_when_invalid_password(self, create_user: Callable) -> None:
-        data = {'id': create_user().id, 'username': create_user().username, 'password': 'Afe3#@vdfvolbcvs'}
-        serializer = UserLoginSerializer(data=data, context={'user': create_user})
+        user = create_user()
+        data = {'id': user.id, 'username': user.username, 'password': 'Afe3#@vdfvolbcvs'}
+        serializer = UserLoginSerializer(data=data, context={'user': user})
         with pytest.raises(BadRequestError):
             serializer.is_valid()
 
