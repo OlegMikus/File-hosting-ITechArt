@@ -5,7 +5,6 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 
 from src.apps.files.models import File
-from src.apps.files.serializers.file_serializer import FileSerializer
 
 
 @pytest.mark.django_db
@@ -45,6 +44,7 @@ class TestFileUploadByChunksView:
                   'resumableTotalChunks=1&resumableHash=hashChunk&resumableDescription=description')
 
         assert response.status_code == 404
+        assert response.data['data'] == ''
 
     def test_post_returns_400_when_invalid_data(
             self, api_client: APIClient, create_user: Callable,
@@ -109,7 +109,8 @@ class TestDetailView:
         response = api_client.get(url)
 
         assert response.status_code == 200
-        assert response.data['data']['result'] == FileSerializer(file).data
+        expected_data = {'name': 'file.txt', 'description': ''}
+        assert response.data['data']['result'] == expected_data
 
     def test_supports_put_request(
             self, api_client: APIClient, create_user: Callable,
@@ -124,8 +125,8 @@ class TestDetailView:
         response = api_client.put(url, data=data)
 
         assert response.status_code == 200
-        file = File.all_objects.filter(id=file.id).first()
-        assert response.data['data']['result'] == FileSerializer(file).data
+        expected_data = {'name': 'file.txt', 'description': 'test file description'}
+        assert response.data['data']['result'] == expected_data
 
     def test_supports_delete_request(
             self, api_client: APIClient, create_user: Callable,
