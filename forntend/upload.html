@@ -35,7 +35,7 @@
             body: formData,
             headers: {
                 'Content-Type': 'application/json',
-                'access-token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjAyYzFlZDA2LTQzYTgtNDU4Zi04MDhkLWQ2MjFmZWQwMTI4YyIsImV4cCI6MTY1MTQ5NDM5N30.6_n9S2wr4aCjFayDxxk787ra64Ebq7f0KQTfjgUUDfw'
+                'access-token': localStorage.getItem('access_token')
             }
         })
     })

@@ -13,7 +13,7 @@ pyjwt = "==2.1.0"
 datetime = "==4.3"
 celery = "==5.1.2"
 python-magic = "==0.4.24"
-django-cors-headers = "*"
+django-cors-headers = "==3.10.0"
 
 [dev-packages]
 pytest = "==6.2.5"
