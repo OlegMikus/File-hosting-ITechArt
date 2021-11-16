@@ -4,31 +4,48 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 
     <title>SignUp</title>
 </head>
 
 <body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<h1>SignUp Page</h1>
 
-<h3>Username</h3>
-<input type="text" id="username">
-<h3>Password</h3>
-<input type="text" id="password">
-<h3>Email</h3>
-<input type="text" id="email">
-<h3>First name</h3>
-<input type="text" id="first-name">
-<h3>Last name</h3>
-<input type="text" id="last-name">
-<h3>age</h3>
-<input type="text" id="age">
+<form class="form-4">
+    <h1>SignUp Page</h1>
 
+    <p>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="login" placeholder="Username" required>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input type="text" id="password" name='password' placeholder="Password" required>
+    </p>
 
-<form method="post" enctype="multipart/form-data" action="">
-    <input type="button" id="btn" value="SignUp"/>
+    <p>
+        <label for="email">Password</label>
+        <input type="text" id="email" name='email' placeholder="Email" required>
+    </p>
+    <p>
+        <label for="email">First Name</label>
+        <input type="text" id="first-name" name='first-name' placeholder="First Name" required>
+    </p>
+    <p>
+        <label for="email">Last Name</label>
+        <input type="text" id="last-name" name='last-name' placeholder="Last Name" required>
+    </p>
+
+    <p>
+        <label for="email">Age</label>
+        <input type="text" id="age" name='age' placeholder="Age" required>
+    </p>
+
+    <p>
+        <input type="submit" name="submit" id="btn" value="SignUp">
+    </p>
 </form>
+
 <script>
     const data = {
         username: document.getElementById("username").value,
@@ -38,6 +55,7 @@
         last_name: document.getElementById("last-name").value,
         age: document.getElementById("age").value
     }
+    console.log(data)
     var url = 'http://0.0.0.0:1337/api/users/signup/'
     const btn = document.querySelector("#btn");
     btn.addEventListener("click", () => {

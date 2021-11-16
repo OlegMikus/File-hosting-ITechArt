@@ -4,20 +4,29 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="stylesheet" href="style.css">
     <title>LogIn</title>
 </head>
 
 <body>
-<h1>LogIn Page</h1>
 
-<h3>Username</h3>
-<input type="text" id="username">
-<h3>Password</h3>
-<input type="text" id="password">
+<form class="form-4">
+    <h1>LogIn Page</h1>
 
-<form method="post" enctype="multipart/form-data" action="">
-    <input type="button" id="btn" value="LogIn"/>
+    <p>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="login" placeholder="Username" required>
+    </p>
+    <p>
+        <label for="password">Password</label>
+        <input type="text" id="password" name='password' placeholder="Password" required>
+    </p>
+
+    <p>
+        <input type="submit" name="submit" id="btn" value="LogIn">
+    </p>
+    <span>Don't have account? </span><span><a href="./singup.html">SignUP</a></span>
+
 </form>
 <script>
     const url = 'http://0.0.0.0:1337/api/users/login/';
@@ -25,7 +34,7 @@
         username: document.getElementById("username").value,
         password: document.getElementById("password").value
     };
-
+    console.log(data)
     const btn = document.querySelector("#btn");
     btn.addEventListener("click", () => {
 
@@ -35,7 +44,8 @@
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(response => (response.json()).then(response => console.log(response.data.result.access_token)))
+        }).then(response => (response.json()).then(response => localStorage.setItem('access_token', response.data.result.access_token)))
+
     })
 </script>
 </body>
