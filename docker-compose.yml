@@ -8,7 +8,7 @@ services:
   app_auth:
     restart: always
     environment:
-      APP_TYPE: "${AUTH}"
+      APP_TYPE: "${APP_TYPE_AUTH}"
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
@@ -28,7 +28,7 @@ services:
   app_file:
     restart: always
     environment:
-      APP_TYPE: "${FILE}"
+      APP_TYPE: "${APP_TYPE_FILE}"
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
