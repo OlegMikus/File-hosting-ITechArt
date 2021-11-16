@@ -14,14 +14,14 @@ class TestFileDashboardViews:
             self, api_client: APIClient, create_user: Callable,
             create_token_for_user: Callable) -> None:
 
+        user = create_user()
         url = reverse('dashboard')
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.get(url)
 
         assert response.status_code == 200
 
-    def test_returns_401_when_unauthenticated(
-            self, api_client: APIClient) -> None:
+    def test_returns_401_when_unauthenticated(self, api_client: APIClient) -> None:
 
         url = reverse('dashboard')
         response = api_client.get(url)
@@ -36,8 +36,9 @@ class TestFileUploadByChunksView:
             self, api_client: APIClient, create_user: Callable,
             create_token_for_user: Callable) -> None:
 
+        user = create_user()
         url = reverse('upload-chunks')
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.get(
             url + '?resumableChunkNumber=1&resumableTotalSize=407644&resumableType=image%2Fjpeg&'
                   'resumableIdentifier=407644-nT1GuMCuM9Ijpg&resumableFilename=nT1GuMCuM9I.jpg&'
@@ -49,22 +50,21 @@ class TestFileUploadByChunksView:
             self, api_client: APIClient, create_user: Callable,
             create_token_for_user: Callable) -> None:
 
+        user = create_user()
         url = reverse('upload-chunks')
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.post(url)
 
         assert response.status_code == 400
 
-    def test_get_returns_401_when_unauthenticated(
-            self, api_client: APIClient) -> None:
+    def test_get_returns_401_when_unauthenticated(self, api_client: APIClient) -> None:
 
         url = reverse('upload-chunks')
         response = api_client.get(url)
 
         assert response.status_code == 401
 
-    def test_post_returns_401_when_unauthenticated(
-            self, api_client: APIClient) -> None:
+    def test_post_returns_401_when_unauthenticated(self, api_client: APIClient) -> None:
 
         url = reverse('upload-chunks')
         response = api_client.post(url)
@@ -79,14 +79,14 @@ class TestNonChinkUploadView:
             self, api_client: APIClient, create_user: Callable,
             create_token_for_user: Callable) -> None:
 
+        user = create_user()
         url = reverse('upload-non-chunk')
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.post(url, data={})
 
         assert response.status_code == 400
 
-    def test_post_returns_401_when_unauthenticated(
-            self, api_client: APIClient) -> None:
+    def test_post_returns_401_when_unauthenticated(self, api_client: APIClient) -> None:
 
         url = reverse('upload-non-chunk')
         response = api_client.post(url)
@@ -105,7 +105,7 @@ class TestDetailView:
         user = create_user()
         file = create_file(user)
         url = reverse('detail', kwargs={'primary_key': str(file.id)})
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(user))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.get(url)
 
         assert response.status_code == 200
@@ -119,7 +119,7 @@ class TestDetailView:
         user = create_user()
         file = create_file(user)
         url = reverse('detail', kwargs={'primary_key': str(file.id)})
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(user))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         data = {'description': 'test file description'}
         response = api_client.put(url, data=data)
 
@@ -135,7 +135,7 @@ class TestDetailView:
         user = create_user()
         file = create_file(user)
         url = reverse('detail', kwargs={'primary_key': str(file.id)})
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(user))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.delete(url)
 
         assert response.status_code == 200
@@ -146,7 +146,8 @@ class TestDetailView:
             self, api_client: APIClient, create_file: Callable,
             create_user: Callable) -> None:
 
-        url = reverse('detail', kwargs={'primary_key': str(create_file(create_user()).id)})
+        user = create_user()
+        url = reverse('detail', kwargs={'primary_key': str(create_file(user).id)})
         response = api_client.get(url)
 
         assert response.status_code == 401
@@ -156,7 +157,8 @@ class TestDetailView:
             self, api_client: APIClient, create_file: Callable,
             create_user: Callable) -> None:
 
-        url = reverse('detail', kwargs={'primary_key': str(create_file(create_user()).id)})
+        user = create_user()
+        url = reverse('detail', kwargs={'primary_key': str(create_file(user).id)})
         data = {'description': 'test file description'}
 
         response = api_client.put(url, data)
@@ -185,14 +187,14 @@ class TestUploadTemplateView:
             self, api_client: APIClient, create_user: Callable,
             create_token_for_user: Callable) -> None:
 
+        user = create_user()
         url = reverse('upload-template')
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(create_user()))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.get(url)
 
         assert response.status_code == 200
 
-    def test_returns_401_when_unauthenticated(
-            self, api_client: APIClient) -> None:
+    def test_returns_401_when_unauthenticated(self, api_client: APIClient) -> None:
 
         url = reverse('upload-template')
         response = api_client.get(url)
@@ -209,7 +211,7 @@ class TestDownloadSingleView:
 
         user = create_user()
         url = reverse('download-file', kwargs={'primary_key': str(create_file(user).id)})
-        api_client.credentials(HTTP_Access_Token=create_token_for_user(user))
+        api_client.credentials(HTTP_Access_Token=create_token_for_user(str(user.id)))
         response = api_client.get(url)
 
         assert response.status_code == 404
@@ -218,8 +220,8 @@ class TestDownloadSingleView:
     def test_returns_401_when_unauthenticated(
             self, create_file: Callable, create_user: Callable,
             api_client: APIClient) -> None:
-
-        url = reverse('download-file', kwargs={'primary_key': str(create_file(create_user()).id)})
+        user = create_user()
+        url = reverse('download-file', kwargs={'primary_key': str(create_file(user).id)})
         response = api_client.get(url)
 
         assert response.status_code == 401

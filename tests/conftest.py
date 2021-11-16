@@ -35,8 +35,8 @@ def create_user() -> Callable:
 
 @pytest.fixture
 def create_token_for_user() -> Callable:
-    def make_token(user: User) -> str:
-        token, refresh_token = create_tokens(user_id=str(user.id))
+    def make_token(user_id: str) -> str:
+        token, refresh_token = create_tokens(user_id=str(user_id))
         return token
 
     return make_token
@@ -46,12 +46,12 @@ def create_token_for_user() -> Callable:
 @pytest.mark.django_db
 def create_file() -> Callable:
     def make_file(user: User) -> File:
-        File.objects.create(user=user,
-                            storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
-                            destination=os.path.join(str(user.id), 'file.txt'),
-                            name='file.txt', type='text/plain',
-                            size=321351, hash='dkigfbdgkfl43rfldfbd'
-                            )
-        return File.objects.filter(name='file.txt').first()
+        return File.objects.create(
+            user=user,
+            storage=FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT),
+            destination=os.path.join(str(user.id), 'file.txt'),
+            name='file.txt', type='text/plain',
+            size=321351, hash='dkigfbdgkfl43rfldfbd'
+        )
 
     return make_file
