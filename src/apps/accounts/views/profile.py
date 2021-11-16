@@ -15,8 +15,6 @@ class UserProfileView(GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         serializer = UserSerializer(user)
-        if not serializer.is_valid():
-            raise BadRequestError(serializer.errors)
         return OkResponse(serializer.data)
 
     @login_required

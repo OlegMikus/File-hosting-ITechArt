@@ -13,7 +13,7 @@ celery_app.autodiscover_tasks()
 
 celery_app.conf.beat_schedule = {
     'task_remove_expired_chunks': {
-        'task': 'src.apps.files.tasks.task.task_remove_expired_chunks',
+        'task': 'src.apps.files.tasks.task_remove_expired_chunks',
         'schedule': crontab(day_of_week='*', hour=4, minute=0),
     },
     'task_remove_deleted_files': {
