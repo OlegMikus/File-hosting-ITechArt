@@ -13,4 +13,4 @@ FILE_DIR=$(pwd)
 cd ..
 CWD="$(pwd)"
 
-docker-compose -f docker-compose-testing.yml run --rm testapp_auth bash -c "pytest ."
+docker-compose -f docker-compose-testing.yml run --rm testapp bash -c "pytest ."
