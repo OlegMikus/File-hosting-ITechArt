@@ -7,6 +7,28 @@ networks:
 services:
   app_auth:
     restart: always
+    environment:
+      APP_TYPE: "${APP_TYPE_AUTH}"
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
+    volumes:
+      - .:/app
+      - ./static/:/static
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - trainee_network
+
+  app_file:
+    restart: always
+    environment:
+      APP_TYPE: "${APP_TYPE_FILE}"
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
@@ -16,13 +38,14 @@ services:
       - ./static/:/static
       - ./storage/:/storage
     ports:
-      - 8000:8000
+      - 8024:8000
     expose:
-      - 8000
+      - 8024
     depends_on:
       - db
     networks:
       - trainee_network
+
 
   webserver:
     build: ./srv/webserver
@@ -34,8 +57,10 @@ services:
       - ./storage/:/app/storage
     ports:
       - 1337:80
+      - 1338:81
     depends_on:
       - app_auth
+      - app_file
     networks:
       - trainee_network
 
@@ -61,8 +86,8 @@ services:
     volumes:
       - .:/app
     depends_on:
-        - db
-        - rabbit
+      - db
+      - rabbit
     networks:
       - trainee_network
 
