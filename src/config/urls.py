@@ -9,8 +9,8 @@ auth_urls = [
 ]
 
 file_urls = [
-        path('api/files/', include('src.apps.files.urls')),
-    ]
+    path('api/files/', include('src.apps.files.urls')),
+]
 
 if APP_TYPE == APP_TYPE_AUTH:
     urlpatterns = auth_urls
