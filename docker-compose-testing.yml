@@ -6,6 +6,8 @@ networks:
 
 services:
   testapp:
+    environment:
+      ENVIRONMENT: 'testing'
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
