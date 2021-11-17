@@ -1,0 +1,17 @@
+version: '3.9'
+
+networks:
+  trainee_network:
+    driver: bridge
+
+services:
+  testapp:
+    environment:
+      ENVIRONMENT: 'testing'
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    volumes:
+      - .:/app
+    networks:
+      - trainee_network
