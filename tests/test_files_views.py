@@ -44,7 +44,6 @@ class TestFileUploadByChunksView:
                   'resumableTotalChunks=1&resumableHash=hashChunk&resumableDescription=description')
 
         assert response.status_code == 404
-        assert response.data['data'] == ''
 
     def test_post_returns_400_when_invalid_data(
             self, api_client: APIClient, create_user: Callable,
