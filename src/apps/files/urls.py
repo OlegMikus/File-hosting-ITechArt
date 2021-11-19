@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from src.apps.files.views.dashboard import DashboardView
 from src.apps.files.views.detail import FileDetailView
@@ -17,5 +17,5 @@ urlpatterns = [
     path('<uuid:primary_key>/download/', FileDownloadView.as_view(), name='download-file'),
     path('download/', AllUsersFilesDownload.as_view(), name='download-all-files'),
     path('detail/<uuid:primary_key>/', FileDetailView.as_view(), name='detail'),
-    re_path(r'^dashboard/$', DashboardView.as_view(), name='dashboard')
+    path('dashboard/', DashboardView.as_view(), name='dashboard')
 ]
