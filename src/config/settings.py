@@ -119,7 +119,7 @@ STATIC_ROOT = BASE_DIR / 'static'
 AUTH_USER_MODEL = 'accounts.User'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'src.apps.base.services.std_error_handler.std_error_handler'
+    'EXCEPTION_HANDLER': 'src.apps.base.services.custom_exception_handler.custom_exception_handler'
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
