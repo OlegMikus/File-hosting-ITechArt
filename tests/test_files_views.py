@@ -108,7 +108,7 @@ class TestDetailView:
         response = api_client.get(url)
 
         assert response.status_code == 200
-        expected_data = {'name': 'file.txt', 'description': ''}
+        expected_data = {'id': str(file.id), 'name': 'file.txt', 'description': ''}
         assert response.data['data']['result'] == expected_data
 
     def test_supports_put_request(
@@ -124,7 +124,7 @@ class TestDetailView:
         response = api_client.put(url, data=data)
 
         assert response.status_code == 200
-        expected_data = {'name': 'file.txt', 'description': 'test file description'}
+        expected_data = {'id': str(file.id), 'name': 'file.txt', 'description': 'test file description'}
         assert response.data['data']['result'] == expected_data
 
     def test_supports_delete_request(
