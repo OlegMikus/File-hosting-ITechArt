@@ -127,5 +127,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'access-token',
     'refresh-token',
-    'Content-Type'
+    'Content-Type',
+    'Access-Control-Allow-Origin'
 ]
