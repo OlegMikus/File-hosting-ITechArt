@@ -128,5 +128,4 @@ CORS_ALLOW_HEADERS = [
     'access-token',
     'refresh-token',
     'Content-Type',
-    'Access-Control-Allow-Origin'
 ]
