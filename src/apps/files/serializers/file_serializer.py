@@ -6,5 +6,5 @@ from src.apps.files.models import File
 class FileSerializer(ModelSerializer):
     class Meta:
         model = File
-        fields = ('name', 'description')
-        read_only_fields = ('name', )
+        fields = ('id', 'name', 'description')
+        read_only_fields = ('id', 'name', )

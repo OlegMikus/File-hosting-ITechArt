@@ -22,9 +22,9 @@ def task_build_file(user_id: str,
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
     hash_sum = data.get('hash_sum')
-    user_storage_dir = os.path.join(str(user.id), data.get('filename'))
+    user_storage_dir = os.path.join(file_storage.destination, str(user.id))
     os.makedirs(user_storage_dir, 0o777, exist_ok=True)
-    file_path = os.path.join(file_storage.destination, user_storage_dir)
+    file_path = os.path.join(user_storage_dir, data.get('filename'))
     with open(file_path, 'ab') as target_file:
         for path in chunks_paths:
             with open(path, 'rb') as stored_chunk_file:
