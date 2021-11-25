@@ -5,7 +5,7 @@ from typing import Dict, Any, List
 import magic
 
 from src.apps.accounts.models import User
-from src.apps.files.constants import ALLOWED_FORMATS
+from src.apps.files.constants import ALLOWED_FORMATS, SMALL_FILE_MAX_SIZE, FILE__FIRST_SLICE, FILE__SECOND_SLICE
 from src.apps.files.models import FilesStorage, File
 
 
@@ -13,10 +13,16 @@ def get_chunk_name(filename: str, chunk_number: int) -> str:
     return f'{filename}_part_{chunk_number}'
 
 
-def is_valid_hash_md5(hash_sum: str, file_path: str) -> bool:
+def is_valid_hash_md5(file_size: str, hash_sum: str, file_path: str) -> bool:
     md5 = hashlib.md5()
     if not file_path:
         return False
+
+    if int(file_size) > SMALL_FILE_MAX_SIZE:
+        with open(file_path, 'rb') as file:
+            md5.update(file.read(FILE__FIRST_SLICE))
+            md5.update(file.read()[-FILE__SECOND_SLICE:])
+        return hash_sum == md5.hexdigest()
 
     with open(file_path, 'rb') as file:
         chunk = None

@@ -35,7 +35,7 @@ def task_build_file(user_id: str,
     errors = []
     if not is_valid_format(file_path):
         errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
-    if not is_valid_hash_md5(hash_sum, file_path):
+    if not is_valid_hash_md5(data.get('total_size'), hash_sum, file_path):
         errors.append('Invalid hash')
     if errors:
         os.remove(file_path)
