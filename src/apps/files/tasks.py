@@ -46,9 +46,9 @@ def task_build_file(user_id: str,
 
 @celery_app.task
 def task_remove_file(file_path: str) -> None:
-    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+    if not os.path.isfile(file_path):
         return None
-    shutil.rmtree(file_path)
+    os.remove(file_path)
 
 
 @celery_app.task
