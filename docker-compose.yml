@@ -12,7 +12,6 @@ services:
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
-    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
     volumes:
       - .:/app
       - ./static/:/static
@@ -32,7 +31,6 @@ services:
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
-    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
     volumes:
       - .:/app
       - ./static/:/static
@@ -81,7 +79,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: ./srv/app/Dockerfile
+      dockerfile: ./srv/celery/Dockerfile
     command: celery -A src.etl worker -l INFO
     volumes:
       - .:/app
@@ -94,7 +92,7 @@ services:
   celery-beat:
     build:
       context: .
-      dockerfile: ./srv/app/Dockerfile
+      dockerfile: ./srv/celery/Dockerfile
     command: celery -A src.etl beat -l info
     volumes:
       - .:/app
