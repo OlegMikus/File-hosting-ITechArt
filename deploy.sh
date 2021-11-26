@@ -9,7 +9,7 @@ set -o nounset # exit script when it tries to use undeclared variables
 
 zip -r  proj.zip ./src/ ./srv/ ./docker-compose.yml ./Pipfile ./Pipfile.lock ./manage.py ./.env ./static/ ./entrypoint.sh
 
-ssh root@134.122.78.76 'cd /home/oleg && sudo rm -r ./*'
+ssh root@134.122.78.76 'cd /home/oleg/file-hosting && sudo rm -r ./src/ ./srv/ ./docker-compose.yml ./Pipfile ./Pipfile.lock ./manage.py ./.env ./static/ ./entrypoint.sh'
 
 scp proj.zip root@134.122.78.76:/home/oleg/
 
