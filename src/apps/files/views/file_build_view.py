@@ -42,4 +42,4 @@ class BuildFileView(GenericAPIView):
         task_build_file.delay(user.id, self.perm_file_storage.id, serializer.validated_data,
                               chunks_paths, temp_chunks_storage)
 
-        return CreatedResponse({})
+        return CreatedResponse(data=serializer.validated_data)

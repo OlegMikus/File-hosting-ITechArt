@@ -22,4 +22,4 @@ class DashboardView(GenericAPIView):
         queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
         serializer = FileSerializer(queryset, many=True)
         page = self.paginate_queryset(serializer.data)
-        return OkResponse(page)
+        return OkResponse(data=page, total_count=len(queryset))

@@ -63,4 +63,4 @@ class UploadView(GenericAPIView):
             for chunk in chunk_data.chunks():
                 file.write(chunk)
 
-        return CreatedResponse({})
+        return CreatedResponse(data=serializer.validated_data)

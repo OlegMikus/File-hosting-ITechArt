@@ -41,4 +41,4 @@ class UserLoginView(GenericAPIView):
             'access_token': access_token,
             'refresh_token': refresh_token
         }
-        return OkResponse(response)
+        return OkResponse(data=response)

@@ -15,7 +15,7 @@ class UserProfileView(GenericAPIView):
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         serializer = UserSerializer(user)
-        return OkResponse(serializer.data)
+        return OkResponse(data=serializer.data)
 
     @login_required
     def put(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
@@ -25,4 +25,4 @@ class UserProfileView(GenericAPIView):
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
         serializer.save()
-        return OkResponse(serializer.data)
+        return OkResponse(data=serializer.data)
