@@ -7,7 +7,7 @@ from typing import List, Any, Dict
 from src.apps.accounts.models import User
 from src.apps.files.constants import FILE_STORAGE__TYPE__TEMP, CHUNKS__STORAGE_TIME__DAYS, ALLOWED_FORMATS
 from src.apps.files.models import FilesStorage, File
-from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
+from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5, send_email
 
 from src.etl.celery import celery_app
 
@@ -39,7 +39,7 @@ def task_build_file(user_id: str,
         errors.append('Invalid hash')
     if errors:
         os.remove(file_path)
-        # TODO: send_mail() with errors, function here, will be created in another branch
+        send_email(title='Errors during build', message=errors, recipients=[user.email])
         return None
     create_file(user, file_storage, data)
 
