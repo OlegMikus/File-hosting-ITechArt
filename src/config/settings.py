@@ -122,6 +122,14 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.apps.base.services.custom_exception_handler.custom_exception_handler'
 }
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'help.file.hosting@gmail.com'
+EMAIL_HOST_PASSWORD = 'sdfs#R@f223rf'
+DEFAULT_FROM_EMAIL = 'help.file.hosting@gmail.com'
+
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
