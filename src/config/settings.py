@@ -9,7 +9,7 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DJANGO_DEBUG_STATUS, \
     DJANGO_EMAIL_USE_TLS, \
     DJANGO_EMAIL_HOST, \
-    DJANGO_EMAIL_PORT, \
+    DJANGO_EMAIL_PORT
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
