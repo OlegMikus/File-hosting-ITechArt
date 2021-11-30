@@ -10,10 +10,6 @@ RUN pip3 install pipenv
 
 COPY Pipfile Pipfile.lock ./
 
-COPY entrypoint.sh .
-
 RUN pipenv install --system --deploy --ignore-pipfile
 COPY src .
 COPY ./manage.py .
-
-ENTRYPOINT ["./entrypoint.sh"]

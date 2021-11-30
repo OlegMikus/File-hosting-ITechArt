@@ -10,7 +10,7 @@ services:
       ENVIRONMENT: 'testing'
     build:
       context: .
-      dockerfile: ./srv/app/Dockerfile
+      dockerfile: ./srv/celery/Dockerfile
     volumes:
       - .:/app
     networks:
