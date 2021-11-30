@@ -52,6 +52,6 @@ def is_valid_format(file_path: str) -> bool:
         return False
 
     with open(file_path, 'rb') as users_file:
-        file = users_file.read(1024)
+        file = users_file.read(4096)
         file_type = magic.from_buffer(file, mime=True)
         return file_type in ALLOWED_FORMATS
