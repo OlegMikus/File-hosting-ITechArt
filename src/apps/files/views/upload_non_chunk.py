@@ -48,4 +48,4 @@ class NonChunkUploadView(GenericAPIView):
             raise BadRequestError(errors)
 
         create_file(user, self.storage, request.data)
-        return CreatedResponse({})
+        return CreatedResponse(data={})

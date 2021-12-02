@@ -18,4 +18,4 @@ class ChangePasswordView(GenericAPIView):
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
         serializer.set_password()
-        return OkResponse({})
+        return OkResponse(data={})

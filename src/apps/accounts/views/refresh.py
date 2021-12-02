@@ -37,7 +37,7 @@ class RefreshView(GenericAPIView):
                 'refresh_token': refresh_token
             }
 
-            return OkResponse(response)
+            return OkResponse(data=response)
         except jwt.ExpiredSignatureError as expired_signature:
             raise ForbiddenError(expired_signature.args[0]) from expired_signature
         except jwt.InvalidTokenError as invalid_token:

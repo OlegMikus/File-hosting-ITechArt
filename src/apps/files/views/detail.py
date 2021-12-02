@@ -21,7 +21,7 @@ class FileDetailView(GenericAPIView):
         if not file:
             raise BadRequestError('File does not exist')
         serializer = FileSerializer(file)
-        return OkResponse(serializer.data)
+        return OkResponse(data=serializer.data)
 
     @login_required
     def put(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
@@ -30,7 +30,7 @@ class FileDetailView(GenericAPIView):
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
         serializer.save()
-        return OkResponse(serializer.data)
+        return OkResponse(data=serializer.data)
 
     @login_required
     def delete(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
@@ -39,4 +39,4 @@ class FileDetailView(GenericAPIView):
             raise BadRequestError('File does not exist')
         file.delete()
         task_remove_file.delay(file.absolute_path)
-        return OkResponse({})
+        return OkResponse(data={})

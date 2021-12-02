@@ -18,4 +18,4 @@ class UserSignUpView(GenericAPIView):
             raise BadRequestError(serializer.errors)
 
         serializer.save()
-        return CreatedResponse(serializer.data)
+        return CreatedResponse(data={})
