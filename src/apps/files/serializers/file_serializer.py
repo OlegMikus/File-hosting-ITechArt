@@ -7,4 +7,4 @@ class FileSerializer(ModelSerializer):
     class Meta:
         model = File
         fields = ('id', 'name', 'description', 'type', 'size')
-        read_only_fields = ('id', 'name', )
+        read_only_fields = ('id', 'name', 'type', 'size')
