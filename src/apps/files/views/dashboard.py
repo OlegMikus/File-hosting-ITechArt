@@ -10,7 +10,6 @@ from src.apps.base.services.responses import OkResponse
 from src.apps.files.models import File
 from src.apps.files.paginator import CustomPagination
 from src.apps.files.serializers.file_serializer import FileSerializer
-from src.apps.files.utils import send_email
 
 
 class DashboardView(GenericAPIView):
@@ -23,5 +22,4 @@ class DashboardView(GenericAPIView):
         queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
         serializer = FileSerializer(queryset, many=True)
         page = self.paginate_queryset(serializer.data)
-        send_email(title='asdasdas', message='working', recipients=[user.email])
         return OkResponse(page)
