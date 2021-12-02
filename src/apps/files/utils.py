@@ -3,10 +3,22 @@ import os
 from typing import Dict, Any, List
 
 import magic
+from django.core.mail import send_mail
 
 from src.apps.accounts.models import User
-from src.apps.files.constants import ALLOWED_FORMATS, SMALL_FILE_MAX_SIZE, FILE__FIRST_SLICE, FILE__SECOND_SLICE
+from src.apps.files.constants import ALLOWED_FORMATS, \
+    SMALL_FILE_MAX_SIZE, \
+    FILE__FIRST_SLICE, \
+    FILE__SECOND_SLICE
 from src.apps.files.models import FilesStorage, File
+from src.config.env_consts import DJANGO_DEFAULT_FROM_EMAIL, \
+    DJANGO_EMAIL_HOST_PASSWORD, \
+    DJANGO_EMAIL_HOST_USER
+
+
+def send_email(title: str, message: Any, recipients: List[str]) -> None:
+    send_mail(subject=title, message=message, from_email=DJANGO_DEFAULT_FROM_EMAIL, recipient_list=recipients,
+              auth_user=DJANGO_EMAIL_HOST_USER, auth_password=DJANGO_EMAIL_HOST_PASSWORD)
 
 
 def get_chunk_name(filename: str, chunk_number: int) -> str:

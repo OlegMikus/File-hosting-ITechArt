@@ -6,7 +6,10 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DATABASE_PASSWORD, \
     DATABASE_HOST, \
     DATABASE_POST, \
-    DJANGO_DEBUG_STATUS
+    DJANGO_DEBUG_STATUS, \
+    DJANGO_EMAIL_USE_TLS, \
+    DJANGO_EMAIL_HOST, \
+    DJANGO_EMAIL_PORT
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -121,6 +124,11 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'src.apps.base.services.custom_exception_handler.custom_exception_handler'
 }
+
+EMAIL_USE_TLS = DJANGO_EMAIL_USE_TLS
+EMAIL_HOST = DJANGO_EMAIL_HOST
+EMAIL_PORT = DJANGO_EMAIL_PORT
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
