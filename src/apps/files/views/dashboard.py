@@ -14,7 +14,8 @@ from src.apps.files.serializers.file_serializer import FileSerializer
 
 class DashboardView(GenericAPIView):
     filter_backends = (OrderingFilter, SearchFilter)
-    ordering_fields = ('name',)
+    ordering_fields = ('name', 'size')
+    search_fields = ('name', )
     pagination_class = CustomPagination
 
     @login_required
