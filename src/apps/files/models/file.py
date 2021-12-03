@@ -11,7 +11,7 @@ class File(BaseModel):
     storage = models.ForeignKey(FilesStorage, on_delete=models.DO_NOTHING)
     destination = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
-    description = models.TextField()
+    description = models.TextField(max_length=320)
     type = models.CharField(max_length=128)
     size = models.BigIntegerField()
     hash = models.CharField(max_length=512)
