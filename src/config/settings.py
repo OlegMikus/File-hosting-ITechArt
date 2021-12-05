@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'rest_framework_swagger',
 
     'src.apps.accounts',
     'src.apps.base',
@@ -128,7 +129,6 @@ REST_FRAMEWORK = {
 EMAIL_USE_TLS = DJANGO_EMAIL_USE_TLS
 EMAIL_HOST = DJANGO_EMAIL_HOST
 EMAIL_PORT = DJANGO_EMAIL_PORT
-
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True

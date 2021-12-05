@@ -17,6 +17,7 @@ django-cors-headers = "==3.10.0"
 pytest = "==6.2.5"
 pytest-django = "==4.4.0"
 pytest-cov = "==3.0.0"
+django-rest-swagger = "*"
 
 [dev-packages]
 pylint = "==2.11.1"
