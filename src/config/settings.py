@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
-    'rest_framework_swagger',
+    'drf_yasg',
 
     'src.apps.accounts',
     'src.apps.base',
