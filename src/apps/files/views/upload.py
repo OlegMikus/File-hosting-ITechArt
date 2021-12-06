@@ -16,13 +16,13 @@ from src.apps.files.utils import get_chunk_name
 
 
 class UploadView(GenericAPIView):
-
+    serializer_class = ChunkUploadQueryParamsSerializer
     file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
     file_storage_path = file_storage.destination
 
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
+        serializer = self.serializer_class(data=request.query_params)
 
         if not serializer.is_valid():
             raise BadRequestError({})
@@ -41,7 +41,7 @@ class UploadView(GenericAPIView):
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
+        serializer = self.serializer_class(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
 

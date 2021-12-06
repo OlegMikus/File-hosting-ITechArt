@@ -17,10 +17,11 @@ class DashboardView(GenericAPIView):
     ordering_fields = ('name', 'size')
     search_fields = ('name', )
     pagination_class = CustomPagination
+    serializer_class = FileSerializer
 
     @login_required
     def get(self, request: Request, *args: Any, user: User, **kwargs: Any) -> OkResponse:
         queryset = self.filter_queryset(queryset=File.objects.filter(user=user))
-        serializer = FileSerializer(queryset, many=True)
+        serializer = self.serializer_class(queryset, many=True)
         page = self.paginate_queryset(serializer.data)
         return OkResponse(data=page, total_count=len(queryset))

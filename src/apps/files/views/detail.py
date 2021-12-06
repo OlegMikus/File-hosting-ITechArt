@@ -14,19 +14,20 @@ from src.apps.files.tasks import task_remove_file
 
 
 class FileDetailView(GenericAPIView):
+    serializer_class = FileSerializer
 
     @login_required
     def get(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
         file = File.objects.filter(id=primary_key, user=user).first()
         if not file:
             raise BadRequestError('File does not exist')
-        serializer = FileSerializer(file)
+        serializer = self.serializer_class(file)
         return OkResponse(data=serializer.data)
 
     @login_required
     def put(self, request: Request, *args: Any, primary_key: UUID, user: User, **kwargs: Any) -> OkResponse:
         file = File.objects.filter(id=primary_key, user=user).first()
-        serializer = FileSerializer(file, data=request.data)
+        serializer = self.serializer_class(file, data=request.data)
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
         serializer.save()

@@ -20,10 +20,11 @@ class BuildFileView(GenericAPIView):
 
     perm_file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__PERMANENT)
     temp_file_storage = FilesStorage.objects.get(type=FILE_STORAGE__TYPE__TEMP)
+    serializer_class = ChunkUploadQueryParamsSerializer
 
     @login_required
     def post(self, request: Request, *args: Any, user: User, **kwargs: Any) -> Response:
-        serializer = ChunkUploadQueryParamsSerializer(data=request.query_params)
+        serializer = self.serializer_class(data=request.query_params)
         if not serializer.is_valid():
             raise BadRequestError(serializer.errors)
 
