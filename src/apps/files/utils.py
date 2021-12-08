@@ -17,7 +17,7 @@ from src.config.env_consts import DJANGO_DEFAULT_FROM_EMAIL, \
 
 
 def send_email(title: str, message: Any, recipients: List[str]) -> None:
-    send_mail(subject=title, message=message, from_email=DJANGO_DEFAULT_FROM_EMAIL, recipient_list=recipients,
+    send_mail(subject=title, message=f'{message}', from_email=DJANGO_DEFAULT_FROM_EMAIL, recipient_list=recipients,
               auth_user=DJANGO_EMAIL_HOST_USER, auth_password=DJANGO_EMAIL_HOST_PASSWORD)
 
 
