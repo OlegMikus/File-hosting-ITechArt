@@ -36,10 +36,7 @@ class BuildFileView(GenericAPIView):
         chunks_paths = [
             os.path.join(temp_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
-        if File.objects.filter(hash=serializer.validated_data.get('hash_sum'),
-                               user=user,
-                               size=serializer.validated_data.get('total_size'),
-                               name=filename).first():
+        if File.objects.filter(user=user, name=filename).first():
             raise BadRequestError('File already exists')
         if not is_upload_complete(chunks_paths):
             raise BadRequestError('Upload not finished')
