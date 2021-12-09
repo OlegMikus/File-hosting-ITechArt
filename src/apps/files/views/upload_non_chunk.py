@@ -40,7 +40,8 @@ class NonChunkUploadView(GenericAPIView):
                 file.write(chunk)
 
         errors = []
-        if File.objects.filter(hash=hash_sum, user=user).first():
+        if File.objects.filter(hash=hash_sum, user=user, size=request.data.get('total_size'),
+                               name=file_data.name).first():
             raise BadRequestError('File already exist')
         if not is_valid_format(file_path):
             errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
