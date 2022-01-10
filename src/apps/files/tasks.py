@@ -31,8 +31,8 @@ def task_build_file(user_id: str,
                 target_file.write(stored_chunk_file.read())
             os.unlink(path)
     os.rmdir(temp_chunks_storage)
-
     errors = []
+
     if not is_valid_format(file_path):
         errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
     if not is_valid_hash_md5(data.get('total_size'), hash_sum, file_path):

@@ -10,6 +10,7 @@ from src.apps.accounts.models import User
 from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE__NON_CHUNK__MAX_SIZE, ALLOWED_FORMATS
+from src.apps.files.models import File
 from src.apps.files.utils import create_file, is_valid_format, is_valid_hash_md5
 from src.apps.files.models.files_storage import FilesStorage
 
@@ -39,6 +40,8 @@ class NonChunkUploadView(GenericAPIView):
                 file.write(chunk)
 
         errors = []
+        if File.objects.filter(user=user, name=file_data.name).first():
+            raise BadRequestError('File already exist')
         if not is_valid_format(file_path):
             errors.append(f'Unsupported file format, use one from this: {ALLOWED_FORMATS}')
         if not is_valid_hash_md5(request.data.get('total_size'), hash_sum, file_path):

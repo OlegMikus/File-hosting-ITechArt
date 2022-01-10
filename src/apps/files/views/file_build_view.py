@@ -11,7 +11,7 @@ from src.apps.base.services.responses import CreatedResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.serializers.query_params_serializer import ChunkUploadQueryParamsSerializer
 from src.apps.files.constants import FILE_STORAGE__TYPE__PERMANENT, FILE_STORAGE__TYPE__TEMP
-from src.apps.files.models import FilesStorage
+from src.apps.files.models import FilesStorage, File
 from src.apps.files.utils import is_upload_complete, get_chunk_name
 from src.apps.files.tasks import task_build_file
 
@@ -36,7 +36,8 @@ class BuildFileView(GenericAPIView):
         chunks_paths = [
             os.path.join(temp_chunks_storage, get_chunk_name(filename, x))
             for x in range(1, total_chunks + 1)]
-
+        if File.objects.filter(user=user, name=filename).first():
+            raise BadRequestError('File already exists')
         if not is_upload_complete(chunks_paths):
             raise BadRequestError('Upload not finished')
         task_build_file.delay(user.id, self.perm_file_storage.id, serializer.validated_data,
