@@ -13,19 +13,19 @@ FILE_DIR=$(pwd)
 cd ..
 CWD="$(pwd)"
 
-chmod ug+x "./scripts/lint.sh"
-bash ./scripts/lint.sh
-bash ./scripts/tests.sh
+#chmod ug+x "./scripts/lint.sh"
+#bash ./scripts/lint.sh
+#bash ./scripts/tests.sh
 
-zip -r  proj.zip ./src/ ./srv/ ./docker-compose.yml ./Pipfile ./Pipfile.lock ./manage.py ./.env ./static/ ./entrypoint.sh
+zip -r  proj.zip src/ srv/ docker-compose.yml Pipfile Pipfile.lock manage.py .env static/ entrypoint.sh
 
-ssh oleg@134.122.78.76 'cd file-hosting/ && docker-compose down'
+ssh -i "file-hosting-aws.pem" ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com 'docker-compose down'
 
-ssh root@134.122.78.76 'cd /home/oleg/file-hosting && sudo rm -r ./src/ ./srv/ ./docker-compose.yml ./Pipfile ./Pipfile.lock ./manage.py ./.env ./static/ ./entrypoint.sh'
+ssh -i "file-hosting-aws.pem" ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com 'sudo rm -r ./src/ ./srv/ ./docker-compose.yml ./Pipfile ./Pipfile.lock ./manage.py ./.env ./static/ ./entrypoint.sh'
 
-scp proj.zip root@134.122.78.76:/home/oleg/
-
-ssh root@134.122.78.76 'sudo unzip /home/oleg/proj.zip -d /home/oleg/file-hosting'
-
-ssh oleg@134.122.78.76 'cd file-hosting/ && docker-compose up --build'
-ssh oleg@134.122.78.76 'docker rm $(docker ps --filter status=exited -q)'
+scp -i "file-hosting-aws.pem" proj.zip ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com:./
+#
+ssh -i "file-hosting-aws.pem" ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com 'sudo unzip proj.zip -d ./'
+#
+ssh -i "file-hosting-aws.pem" ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com 'docker-compose up --build'
+ssh -i "file-hosting-aws.pem" ubuntu@ec2-18-208-141-90.compute-1.amazonaws.com 'docker rm $(docker ps --filter status=exited -q)'
