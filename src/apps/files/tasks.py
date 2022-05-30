@@ -18,7 +18,6 @@ def task_build_file(user_id: str,
                     data: Dict[str, Any],
                     chunks_paths: List[str],
                     temp_chunks_storage: str) -> None:
-
     user = User.objects.get(id=user_id)
     file_storage = FilesStorage.objects.get(id=file_storage_id)
     hash_sum = data.get('hash_sum')
@@ -53,7 +52,7 @@ def task_remove_file(file_path: str) -> None:
 
 @celery_app.task
 def task_remove_deleted_files() -> None:
-    files = File.all_objects.filter(is_alive=False)
+    files = File.all_objects.filter(is_alive=False, date_updated__gte=datetime.now() - timedelta(days=7))
     for file in files:
         if not os.path.exists(file.absolute_path) or not os.path.isfile(file.absolute_path):
             continue

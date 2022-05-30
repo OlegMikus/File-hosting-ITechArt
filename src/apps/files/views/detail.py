@@ -10,7 +10,6 @@ from src.apps.base.services.responses import OkResponse
 from src.apps.base.services.std_error_handler import BadRequestError
 from src.apps.files.models import File
 from src.apps.files.serializers.file_serializer import FileSerializer
-from src.apps.files.tasks import task_remove_file
 
 
 class FileDetailView(GenericAPIView):
@@ -39,5 +38,4 @@ class FileDetailView(GenericAPIView):
         if not file:
             raise BadRequestError('File does not exist')
         file.delete()
-        task_remove_file.delay(file.absolute_path)
         return OkResponse(data={})
