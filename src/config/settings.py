@@ -5,15 +5,33 @@ from src.config.env_consts import DJANGO_SECRET_KEY, \
     DATABASE_USER, \
     DATABASE_PASSWORD, \
     DATABASE_HOST, \
-    DATABASE_POST
+    DATABASE_POST, \
+    DJANGO_DEBUG_STATUS, \
+    DJANGO_EMAIL_USE_TLS, \
+    DJANGO_EMAIL_HOST, \
+    DJANGO_EMAIL_PORT
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
 
 SECRET_KEY = DJANGO_SECRET_KEY
 
-DEBUG = False
+DEBUG = DJANGO_DEBUG_STATUS
 
-ALLOWED_HOSTS = ['0.0.0.0', ]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -24,9 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'corsheaders',
+    'drf_yasg',
 
-    'src.accounts',
-    'src.base',
+    'src.apps.accounts',
+    'src.apps.base',
+    'src.apps.files'
 ]
 
 MIDDLEWARE = [
@@ -37,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'src.config.urls'
@@ -44,7 +66,7 @@ ROOT_URLCONF = 'src.config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates', ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,8 +119,21 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
+
 AUTH_USER_MODEL = 'accounts.User'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'src.base.services.std_error_handler.std_error_handler'
+    'EXCEPTION_HANDLER': 'src.apps.base.services.custom_exception_handler.custom_exception_handler'
 }
+
+EMAIL_USE_TLS = DJANGO_EMAIL_USE_TLS
+EMAIL_HOST = DJANGO_EMAIL_HOST
+EMAIL_PORT = DJANGO_EMAIL_PORT
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'access-token',
+    'refresh-token',
+    'Content-Type',
+]

@@ -3,3 +3,4 @@
 __pycache__/
 .tmp
 .pytest_cache
+./file-hosting-aws.pem

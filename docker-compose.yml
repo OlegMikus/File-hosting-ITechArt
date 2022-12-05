@@ -1,18 +1,17 @@
 version: '3.9'
 
-
 networks:
   trainee_network:
     driver: bridge
 
-
 services:
   app_auth:
     restart: always
+    environment:
+      APP_TYPE: "${APP_TYPE_AUTH}"
     build:
       context: .
       dockerfile: ./srv/app/Dockerfile
-    command: gunicorn src.config.wsgi:application --bind 0.0.0.0:8000 --reload --workers=3 --timeout=120
     volumes:
       - .:/app
       - ./static/:/static
@@ -25,17 +24,81 @@ services:
     networks:
       - trainee_network
 
+  app_file:
+    restart: always
+    environment:
+      APP_TYPE: "${APP_TYPE_FILE}"
+    build:
+      context: .
+      dockerfile: ./srv/app/Dockerfile
+    volumes:
+      - .:/app
+      - ./static/:/static
+      - ./storage/:/storage
+    ports:
+      - 8024:8000
+    expose:
+      - 8024
+    depends_on:
+      - db
+    networks:
+      - trainee_network
+
+
   webserver:
     build: ./srv/webserver
     restart: always
     volumes:
       - ./static/:/static
-      - ./srv/webserver/nginx.conf:/ect/nginx/nginx.conf
+      - ./srv/webserver/nginx.conf:/etc/nginx/nginx.conf
       - ./srv/webserver/conf.d/:/etc/nginx/conf.d/
+      - ./storage/:/app/storage
     ports:
       - 1337:80
+      - 1338:81
     depends_on:
       - app_auth
+      - app_file
+    networks:
+      - trainee_network
+
+  rabbit:
+    hostname: rabbit
+    restart: always
+    image: rabbitmq:3.9.8
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "5672:5672"
+    networks:
+      - trainee_network
+
+  celery:
+    restart: always
+    build:
+      context: .
+      dockerfile: ./srv/celery/Dockerfile
+    command: celery -A src.etl worker -l INFO
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbit
+    networks:
+      - trainee_network
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./srv/celery/Dockerfile
+    command: celery -A src.etl beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - rabbit
     networks:
       - trainee_network
 
